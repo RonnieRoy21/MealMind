@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter1/Client/FoodAnalysis/NutritionixPage.dart';
 import 'package:provider/provider.dart';
 
 import '../../DataModels/BasketModel.dart';
@@ -26,8 +27,6 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     final basket =Provider.of<BasketModel>(context);
-    final Uid=Provider.of<Logins>(context).userId;
-    print('user id in home page is : $Uid');
     return Scaffold(
         appBar: AppBar(
             leading: Icon(Icons.home),
@@ -130,11 +129,7 @@ class _HomeState extends State<Home> {
                       ),
                       Divider(),
                       TextButton(onPressed: (){
-                        print(meal.mealName);//this gives the separated version of query
-                        Navigator.pushNamed(context, '/analysis',arguments: {
-                          'food': meal.mealName,
-                          'grams': 100,
-                        });
+                        Navigator.push(context,MaterialPageRoute(builder: (context) => NutritionixPage(mealName: meal.mealName!.toString())),);
                       }, child: Text('View Standard Nutrition')),
                     ],
                   ),

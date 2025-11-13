@@ -141,13 +141,7 @@ class _PesapalPageState extends State<PesapalPage> {
 
     try {
       await checkPaymentStatus(trackId: trackingId!);
-      print('user is : $userId');
-      print('trackingId: $trackingId');
-      print('payingNumber: $payingNumber');
-      print('methodOfPayment: $methodOfPayment');
-      print('confirmationCode: $confirmationCode');
-      print('paymentStatus: $paymentStatus');
-      print('dateCreated: $dateCreated');
+
       if (userId==null){
         Fluttertoast.showToast(msg: "User Id is empty",toastLength: Toast.LENGTH_SHORT);
         return;
@@ -162,11 +156,9 @@ class _PesapalPageState extends State<PesapalPage> {
         paymentStatus: paymentStatus!,
         dateCreated: dateCreated!,
       ));
-     print("response from supabase : $response");
      Fluttertoast.showToast(msg: "Response : ${response.toString()}");
     }catch(error){
       Fluttertoast.showToast(msg: "Error adding order: $error",toastLength: Toast.LENGTH_SHORT);
-      print("Error adding order: $error");
     }
   }
   @override

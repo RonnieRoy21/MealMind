@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class NutritionixPage extends StatefulWidget {
-  const NutritionixPage({super.key});
+  final String mealName;
+  const NutritionixPage({super.key,required this.mealName});
 
   @override
   State<NutritionixPage> createState() => _NutritionixPageState();
@@ -12,7 +13,6 @@ class NutritionixPage extends StatefulWidget {
 class _NutritionixPageState extends State<NutritionixPage> {
 
   List<Map<String, dynamic>> nutritionList = [];
-  bool isLoading = true;
   List<String> userConditions = [];
   bool conditionsLoaded = false;
 
@@ -23,30 +23,43 @@ class _NutritionixPageState extends State<NutritionixPage> {
   }
 
 
+  Future<List<dynamic>> fetchNutrition(String meal) async {
+    try {
+      final uri = "https://ronnieroy-nutritionalanalysis.onrender.com/getNutrients";
+      final myUrl = Uri.parse(uri);
 
-
-  Future<void> fetchNutrition(String meal) async {
-    nutritionList.clear();
-    final  uri="";
-    final myUrl=Uri.parse(uri);
-    final response = await http.post(
+      final response = await http.post(
         myUrl,
         headers: {
           "Content-Type": "application/json",
+          "accept": "application/json"
         },
-        body: json.encode({"food_name": meal}),
+        body: json.encode({
+          "food_name": meal.toLowerCase()
+        }),
       );
-
+      print("Response is :${response.body}");
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        print(data);
         if (data["foods"] != null && data["foods"].isNotEmpty) {
-          nutritionList.add(data['foods']);
+
+          return data["foods"];
+        } else {
+          return [];
         }
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:Text("Error fetching nutrition for $meal: ${response.statusCode}")));
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(
+                "Error fetching nutrition for $meal: ${response.statusCode}"
+            ))
+        );
+        return [];
       }
+    } catch (error) {
+      return [];
     }
+  }
+
 
 
 
@@ -77,81 +90,54 @@ class _NutritionixPageState extends State<NutritionixPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+ build(BuildContext context)  {
     final totals = calculateTotals();
 
     return Scaffold(
       appBar: AppBar(title: const Text("Meal Nutrition")),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : nutritionList.isEmpty
-            ? const Center(child: Text("No nutrition info found"))
-            : ListView(
-          children: [
-            // Individual food cards
-            ...nutritionList.map(
-                  (item) => Card(
-                elevation: 2,
-                margin: const EdgeInsets.symmetric(vertical: 6),
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Food: ${item["food_name"]}",
-                          style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 6),
-                      Text("Calories: ${item["nf_calories"]} kcal"),
-                      Text("Carbs: ${item["nf_total_carbohydrate"]} g"),
-                      Text("Protein: ${item["nf_protein"]} g"),
-                      Text("Fat: ${item["nf_total_fat"]} g"),
-                      Text("Sodium: ${item["nf_sodium"]} mg"),
-                      Text("Sugar: ${item["nf_sugars"]} g"),
-                      Text("Fiber: ${item["nf_dietary_fiber"]} g"),
-                      Text("Cholesterol: ${item["nf_cholesterol"]} mg"),
-
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            // Totals card with warnings
-            Card(
-              color: Colors.purple.shade50,
-              elevation: 3,
-              margin: const EdgeInsets.symmetric(vertical: 6),
-              child: Padding(
-                padding: const EdgeInsets.all(14.0),
-                child: ExpansionTile(
-                  title: const Text("Total Macros"),
-                  children: [
-                    ListTile(
-                      title: Text("Calories: ${totals['calories']}"),
-                      subtitle: Text("Carbs: ${totals['carbs']}"),
-                    ),
-                    ListTile(
-                      title: Text("Sodium: ${totals['sodium']}"),
-                      subtitle: Text("Sugars: ${totals['sugar']}"),
-                    ),
-                    ListTile(
-                      title: Text("Proteins: ${totals['protein']}"),
-                      subtitle: Text("Fats: ${totals['fat']}"),
-                    ),
-                    ListTile(
-                      title: Text("Fiber: ${totals['fiber']}"),
-                      subtitle: Text("Cholesterol: ${totals['cholesterol']}"),
-                    )
-                  ],
-                )
-              ),
-            )
-          ],
-        ),
-      ),
+      body: FutureBuilder(
+          future:  fetchNutrition(widget.mealName),
+          builder: (context,snapshot){
+            if (snapshot.hasError){
+              return Center(child: Text('Error : ${snapshot.error}'));
+            }
+            if(!snapshot.hasData){
+              return Center(child: CircularProgressIndicator(semanticsLabel: "Loading ...",));
+            }
+            final fList=snapshot.data!;
+            print("Nutrition List: $fList");
+            return ListView.builder(
+                itemCount: fList.length,
+                itemBuilder: (context,index){
+                  final item=fList[index];
+                    return Card(
+                      margin: EdgeInsets.all(8),
+                      elevation: 4,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          ListTile(
+                            title: Text('Food Name: ${item["food_name"]} '),
+                            subtitle: Text('Cholesterol:${item["cholesterol"]} g'),
+                          ),
+                          ListTile(
+                            title: Text('Calories: ${item["calories"] ?? 0} g'),
+                            subtitle: Text('Carbs: ${item["carbs"] ?? 0} g'),
+                          ),
+                          ListTile(
+                            title: Text('Protein: ${item["protein"] ?? 0} g'),
+                            subtitle: Text('Fat: ${item["fat"] ?? 0} g'),
+                          ),
+                          ListTile(
+                            title: Text('Sodium: ${item["sodium"] ?? 0} g'),
+                            subtitle: Text('Sugars : ${item["sugar"] ?? 0} g')
+                          )
+                        ]
+                      )
+                    );
+                },
+              );
+          })
     );
   }
 }

@@ -8,7 +8,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'Client/Basket/basket.dart';
 import 'Client/Home/preview_meal.dart';
-import 'Client/FoodAnalysis/NutritionixPage.dart';
 import 'Client/Login/ProfilePage.dart';
 import 'DataModels/BasketModel.dart';
 import 'Database/login.dart';
@@ -37,7 +36,6 @@ void main() async {
           '/login': (context) => Login(),
           '/home': (context) => Home(),
           '/new_account': (context) => NewAccount(),
-          '/analysis': (context) => NutritionixPage(),
           '/preview_meal': (context) => PreviewMeal(),
           '/basket': (context) => Basket(),
           '/orders': (context) => OrdersPage(),

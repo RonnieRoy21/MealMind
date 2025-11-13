@@ -241,7 +241,6 @@ class _BasketState extends State<Basket> {
                                         content: Text("Error Occurred :${e.toString()}"),
                                       ),
                                     );
-                                    print(e);
                                   }
                                 },
                                 child: const Text("Checkout",style: TextStyle(color: Colors.white,fontSize: 16),),

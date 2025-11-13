@@ -20,7 +20,6 @@ class _OrdersPageState extends State<OrdersPage> {
   @override
   Widget build(BuildContext context) {
     final userId=Provider.of<Logins>(context).userId;
-    print('user id in order page is  : $userId');
     return Scaffold(
       appBar: AppBar(
         title: Text('Orders'),

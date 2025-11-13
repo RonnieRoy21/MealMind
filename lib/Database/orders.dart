@@ -24,7 +24,6 @@ class Orders{
         'payment_status': order.paymentStatus,
         'date_of_pay': order.dateCreated,
      });
-     print(response.toString());
      return response;
     }catch(err){
       return err.toString();
