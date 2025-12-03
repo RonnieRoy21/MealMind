@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter1/Client/Checkout/pesapal_page.dart';
 import 'package:provider/provider.dart';
-import '../../DataModels/BasketModel.dart';
+import '../../DataModels/basket_model.dart';
 
 class Basket extends StatefulWidget {
   const Basket({super.key});
@@ -124,7 +124,7 @@ class _BasketState extends State<Basket> {
                 padding:
                 const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               ),
-              onPressed: () {
+              onPressed:!(totalPrice > 0) ? null : () {
                 showModalBottomSheet(context: context,
                     builder: (context){
                   return SingleChildScrollView(

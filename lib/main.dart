@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter1/Client/Home/homePage.dart';
-import 'package:flutter1/Client/Login/loginPage.dart';
+import 'package:flutter1/Client/Home/home_page.dart';
+import 'package:flutter1/Client/Login/login_page.dart';
 import 'package:flutter1/Client/Login/new_account.dart';
-import 'package:flutter1/Client/Orders/ordersPage.dart';
+import 'package:flutter1/Client/Orders/orders_page.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'Client/Basket/basket.dart';
 import 'Client/Home/preview_meal.dart';
-import 'Client/Login/ProfilePage.dart';
-import 'DataModels/BasketModel.dart';
+import 'Client/Login/profile_page.dart';
+import 'DataModels/basket_model.dart';
 import 'Database/login.dart';
 
 
@@ -34,7 +34,7 @@ void main() async {
         routes: {
           '/tabs': (context) => Navigator(),
           '/login': (context) => Login(),
-          '/home': (context) => Home(),
+          '/home': (context) => HomePage(),
           '/new_account': (context) => NewAccount(),
           '/preview_meal': (context) => PreviewMeal(),
           '/basket': (context) => Basket(),
@@ -57,7 +57,7 @@ class _NavigatorState extends State<Navigator> {
   int _currentIndex = 0;
 
    final List <Widget>  _pages =[
-    Home(),
+    HomePage(),
     Basket(),
     OrdersPage(),
     ProfilePage(),

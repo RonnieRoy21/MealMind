@@ -72,6 +72,19 @@ class Logins extends ChangeNotifier {
       return e.toString();
     }
   }
+  Future signUpWithGoogle({ required String tokenId})async{
+    try{
+      await supabase.auth.signInWithIdToken(
+        provider: OAuthProvider.google,
+        idToken: tokenId,
+      );
+      return null;
+    }on AuthApiException catch (error){
+      return error.message;
+    }catch(error){
+      return error.toString();
+    }
+  }
 
   Future<String> logout() async {
     try {

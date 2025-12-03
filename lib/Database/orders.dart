@@ -1,4 +1,5 @@
 import 'package:flutter1/DataModels/order_model.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../DataModels/meal_model.dart';
@@ -14,7 +15,7 @@ class Orders{
 
   Future addOrder(OrderModel order) async {
     try {
-     final response=await supabase.from("ORDERS").insert({
+     await supabase.from("ORDERS").insert({
         'user_id': order.uid,
         'order_description': order.orderDescription,
         'total_price_paid': order.totalAmount,
@@ -24,7 +25,7 @@ class Orders{
         'payment_status': order.paymentStatus,
         'date_of_pay': order.dateCreated,
      });
-     return response;
+     Fluttertoast.showToast(msg: "Order Placed Successfully");
     }catch(err){
       return err.toString();
     }

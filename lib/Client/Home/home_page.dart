@@ -1,22 +1,22 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter1/Client/FoodAnalysis/NutritionixPage.dart';
 import 'package:provider/provider.dart';
 
-import '../../DataModels/BasketModel.dart';
-import '../../DataModels/Basket_Item.dart';
+import '../../DataModels/basket_model.dart';
+import '../../DataModels/basket_item.dart';
 import '../../DataModels/meal_model.dart';
 import '../../Database/orders.dart';
 import '../../Database/login.dart';
+import '../FoodAnalysis/nutrition_page.dart';
 
-class Home extends StatefulWidget {
-  const Home({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
   @override
-  State<Home> createState() => _HomeState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _HomeState extends State<Home> {
+class _HomePageState extends State<HomePage> {
   final Logins logins = Logins();
   late final Orders getMeals = Orders();
 
@@ -129,7 +129,7 @@ class _HomeState extends State<Home> {
                       ),
                       Divider(),
                       TextButton(onPressed: (){
-                        Navigator.push(context,MaterialPageRoute(builder: (context) => NutritionixPage(mealName: meal.mealName!.toString())),);
+                        Navigator.push(context, MaterialPageRoute(builder: ((context)=>NutritionPage(meal: meal.mealName!))));
                       }, child: Text('View Standard Nutrition')),
                     ],
                   ),

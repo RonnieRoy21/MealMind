@@ -42,6 +42,8 @@ dependencies:
   rename: ^3.1.0
   webview_flutter: ^4.13.0
 
+  flutter_rating_bar: ^4.0.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -65,7 +67,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  #assets:
+  assets:
+    - assets/images/
 
 
 
