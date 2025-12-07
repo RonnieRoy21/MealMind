@@ -29,7 +29,7 @@ class _NewAccountState extends State<NewAccount> {
     "Diabetes",
     "Hypertension",
     "Heart Disease",
-    "Gluten intolerant",
+    "Obesity",
     "None",
   ];
 

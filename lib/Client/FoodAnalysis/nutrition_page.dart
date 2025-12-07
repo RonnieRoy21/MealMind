@@ -55,12 +55,12 @@ class _NutritionPageState extends State<NutritionPage> {
         final data = json.decode(response.body);
         if (data != null ) {
             nutrition.addAll(data['totalsList']);
-
           return data['totalsList'];
-        } else {
+      }else{
+          Fluttertoast.showToast(msg: "No Data from server");
           return {};
         }
-      } else {
+      }else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
@@ -68,7 +68,6 @@ class _NutritionPageState extends State<NutritionPage> {
             backgroundColor: Colors.blueGrey,
             duration: Duration(seconds: 2),
           ),
-
         );
         return {};
       }
@@ -81,7 +80,6 @@ class _NutritionPageState extends State<NutritionPage> {
   Future fetchFlags()async{
       try {
         final List conditions = await profile.getConditions();
-        print("Conditions are : $conditions");
         if (conditions.isNotEmpty) {
           final uri = "https://ronnieroy-nutritionalanalysis.onrender.com/getInsights";
 
@@ -95,7 +93,6 @@ class _NutritionPageState extends State<NutritionPage> {
                 "foodNutrients": nutrition
               })
           );
-          print("Response is : ${response.body}");
           flags=json.decode(response.body);
           return flags;
         } else {
@@ -154,7 +151,6 @@ class _NutritionPageState extends State<NutritionPage> {
             ElevatedButton(
               onPressed: ()async{
                 flags=await fetchFlags();
-                print("Flags are : $flags");
                showModalBottomSheet(
                  barrierColor: Colors.amber,
                    context:context,

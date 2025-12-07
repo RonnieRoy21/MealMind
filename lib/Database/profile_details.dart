@@ -20,8 +20,7 @@ class ProfileDetails{
       }
       return [];
     } on PostgrestException catch (apiError) {
-      print("Database Error : ${apiError.message}");
-      print("Database details : ${apiError.details}");
+      Fluttertoast.showToast(msg: "Database Error : ${apiError.message}");
       return [];
     } catch (anyOtherError) {
       Fluttertoast.showToast(msg: "Error : ${anyOtherError.toString()}");
@@ -76,11 +75,10 @@ Future addProfilePhoto(String imgPath)async{
       final response = await supabase.from("USERS").select('*').eq('userId', userId).single();
       return ProfileModel.fromJson(response);
     } on PostgrestException catch (error) {
-      print("Error for profiles : $error");
       Fluttertoast.showToast(msg: "Database Error : ${error.message}");
       return null;
     } catch (error) {
-      print(error.toString());
+      Fluttertoast.showToast(msg: "Error : ${error.toString()}");
       return null;
     }
   }

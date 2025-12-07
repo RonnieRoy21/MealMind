@@ -3,8 +3,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../DataModels/meal_model.dart';
+import 'login.dart';
 
 class Orders{
+  Logins l=Logins();
   SupabaseClient supabase = Supabase.instance.client;
   Future<List<Meals>> fetchMeals() async {
     final response = await supabase.from('MEALS').select();
@@ -16,7 +18,7 @@ class Orders{
   Future addOrder(OrderModel order) async {
     try {
      await supabase.from("ORDERS").insert({
-        'user_id': order.uid,
+        'userId': l.userId.toString(),
         'order_description': order.orderDescription,
         'total_price_paid': order.totalAmount,
         'paying_number': order.phoneNumber,
@@ -31,14 +33,19 @@ class Orders{
     }
   }
 
-  Future getMyOrders(String userId)async{
+  Future getMyOrders()async{
+    final  userId=l.userId.toString();
     try {
-      final response = await supabase.from("ORDERS").select().eq(
-          'user_id', userId);
-      final data = response as List;
+      final response = await supabase.from("ORDERS").select('*')
+          .eq('userId',userId);
+      final data = response.toList();
       return data.map((order) => OrderModel.fromJson(order)).toList();
-    }catch(error){
-      return error.toString();
+    }on PostgrestException catch(apiError){
+      Fluttertoast.showToast(msg: " Db Error : ${apiError.message}");
+      return;
+    }catch(anyOtherError){
+      Fluttertoast.showToast(msg: "Error in sth : ${anyOtherError.toString()}");
+      return;
     }
   }
 

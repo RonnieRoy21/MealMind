@@ -50,14 +50,16 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context)  {
 
     return Scaffold(
-        appBar: AppBar(title: Text(' Profile')),
+        appBar: AppBar(
+            backgroundColor: Colors.purpleAccent,
+            title: Text(' Profile')
+        ),
         drawer: Drawer(
           backgroundColor: Colors.grey[400],
           elevation: 10,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              const SizedBox(height: 20,),
               FutureBuilder(future: initializeProfile(),
                   builder:(context,snapshot){
                     if(!snapshot.hasData && snapshot.connectionState==ConnectionState.waiting){
@@ -66,39 +68,47 @@ class _ProfilePageState extends State<ProfilePage> {
                       return Center(child: Text('SnapshotError: ${snapshot.error}'));
                     }
                     final ProfileModel? user=snapshot.data! as ProfileModel?;
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CircleAvatar(
-                              radius: 70,
-                              backgroundImage: user!.imgPath.toString().isEmpty?AssetImage(imgPath)
-                                  :AssetImage(imgPath),
+                    return SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              CircleAvatar(
+                                radius: 60,
+                                backgroundImage: user!.imgPath.toString().isEmpty?AssetImage(imgPath)
+                                    :AssetImage(imgPath),
+                              ),
+                              IconButton(onPressed: (){
+                                setState(() {
+                                  int currentIndex=imgPathList.indexOf(imgPath);
+                                  int nextIndex=(currentIndex + 1) % imgPathList.length;
+                                  imgPath=imgPathList[nextIndex];
+                                });
+                              },icon: Icon(Icons.refresh),)
+                            ],
+                          ),
+                          TextButton(onPressed: ()async{
+                            await profile.addProfilePhoto(imgPath);
+                          }, child: Text("save photo")),
+                          ListTile(
+                            title: Text("Username : ${user.username} "),
+                            subtitle: Text("Email :${user.email} "),
+                          ),
+                          Divider(color: Colors.cyan,),
+                          Text("Health Conditions :"),
+                          for (int i=0;i<user.conditions.length;i++)
+                            ListTile(
+                                title: Text(user.conditions[i].toString())
                             ),
-                            IconButton(onPressed: (){
-                              setState(() {
-                                int currentIndex=imgPathList.indexOf(imgPath);
-                                int nextIndex=(currentIndex + 1) % imgPathList.length;
-                                imgPath=imgPathList[nextIndex];
-                              });
-                            },icon: Icon(Icons.refresh),)
-                          ],
-                        ),
-                        TextButton(onPressed: ()async{
-                          await profile.addProfilePhoto(imgPath);
-                        }, child: Text("save photo")),
-                        ListTile(
-                          title: Text("Username : ${user.username} "),
-                          subtitle: Text("Email :${user.email} "),
-                        ),
-                        IconButton(onPressed: (){
-                          setState(() {
-                            isEdited=!isEdited;
-                          });
-                        }, icon: Icon(Icons.edit))
-                      ]
+                          Divider(color: Colors.cyan,),
+                          IconButton(onPressed: (){
+                            setState(() {
+                              isEdited=!isEdited;
+                            });
+                          }, icon: Icon(Icons.edit))
+                        ]
+                      ),
                     );
                   }),
               Spacer(),

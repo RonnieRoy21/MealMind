@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter1/Database/login.dart';
-import 'package:provider/provider.dart';
-
 import '../../Database/orders.dart';
 
 class OrdersPage extends StatefulWidget {
@@ -19,21 +16,23 @@ class _OrdersPageState extends State<OrdersPage> {
 
   @override
   Widget build(BuildContext context) {
-    final userId=Provider.of<Logins>(context).userId;
     return Scaffold(
       appBar: AppBar(
         title: Text('Orders'),
         centerTitle: true,
         backgroundColor: Colors.purpleAccent,
       ),
-      body: FutureBuilder(future:_myOrders.getMyOrders(userId!) ,
+      body: FutureBuilder(future:_myOrders.getMyOrders() ,
           builder: (context,snapshot){
         try{
         if(!snapshot.hasData){
           return Center(child: CircularProgressIndicator(semanticsLabel: 'Loading ...',));
         }else if(snapshot.hasError){
           return Center(child: Text('SnapshotError: ${snapshot.error}'));
-        }else if(snapshot.hasData){
+        }else if(snapshot.connectionState==ConnectionState.waiting && !snapshot.hasData){
+          return Center(child: Text('No Orders found'));
+        }
+        else if(snapshot.hasData){
           _orders = snapshot.data!;
           }else{
           Center(child: Text('No Orders'));
@@ -51,7 +50,6 @@ class _OrdersPageState extends State<OrdersPage> {
                 subtitle: Text('Total : ${order.totalAmount}'),
                 children: [
                   ListTile(
-
                     title: Text('Status: ${order.paymentStatus.toString().toUpperCase()}'),
                     subtitle: Text('Payment Method: ${order.methodOfPayment}'),
                     trailing: Text('Paid By ${order.phoneNumber}'),

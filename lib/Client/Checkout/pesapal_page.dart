@@ -147,7 +147,6 @@ class _PesapalPageState extends State<PesapalPage> {
         return;
       }
      final response= await _order.addOrder(OrderModel(
-        uid: userId!,
         orderDescription: widget.productDescription,
         totalAmount: widget.totalAmount,
         phoneNumber: payingNumber!,

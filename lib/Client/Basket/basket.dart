@@ -125,129 +125,140 @@ class _BasketState extends State<Basket> {
                 const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               ),
               onPressed:!(totalPrice > 0) ? null : () {
-                showModalBottomSheet(context: context,
+                showModalBottomSheet(
+                    isScrollControlled: true,
+                    enableDrag: true,
+                    showDragHandle: true,
+                    context: context,
                     builder: (context){
                   return SingleChildScrollView(
-                    child: Form(
-                        canPop: true,
-                        key: formKey,
-                        child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              TextFormField(
-                                validator: (value){
-                                  if(value!.isEmpty){
-                                    return "Please enter your phone number";
-                                  }
-                                  return null;
-                                },
-                                controller: _phoneController ,
-                                keyboardType: TextInputType.number,
-                                decoration: const InputDecoration(
-                                  labelText: "Phone Number",
-                                  hintText: "The One To Pay With",
-                                  border: OutlineInputBorder(),
+                    child: AlertDialog(
+                      title: Text('Fill all Details to Proceed'),
+                      surfaceTintColor: Colors.greenAccent,
+                      actions:[
+                        Form(
+                          canPop: true,
+                          key: formKey,
+                          child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                TextFormField(
+                                  validator: (value){
+                                    if(value!.isEmpty){
+                                      return "Please enter your phone number";
+                                    }
+                                    return null;
+                                  },
+                                  controller: _phoneController ,
+                                  keyboardType: TextInputType.number,
+                                  decoration: const InputDecoration(
+                                    labelText: "Phone Number",
+                                    hintText: "The One To Pay With",
+                                    border: OutlineInputBorder(),
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(height:8),
-                              TextFormField(
-                                validator: (value){
-                                  if(value!.isEmpty){
-                                    return "Please enter your email";
-                                  }
-                                  return null;
-                                },
-                                controller: _emailController,
-                                keyboardType: TextInputType.emailAddress,
-                                decoration: const InputDecoration(
-                                  labelText: "Email",
-                                  border: OutlineInputBorder(),
-                                ),),
-                              const SizedBox(height:8),
-                              TextFormField(
-                                validator: (value){
-                                  if(value!.isEmpty){
-                                    return "Please enter your first name";
-                                  }
-                                  return null;
-                                },
-                                controller: _firstNameController,
-                                decoration: const InputDecoration(
-                                  labelText: "First Name",
-                                  border: OutlineInputBorder(),
-                                ),),
-                              const SizedBox(height:8),
-                              TextFormField(
-                                validator: (value){
-                                  if(value!.isEmpty){
-                                    return "Please enter your last name";
-                                  }
-                                  return null;
-                                },
-                                controller: _lastNameController,
-                                decoration: const InputDecoration(
-                                  labelText: "Last Name",
-                                  border: OutlineInputBorder(),
-                                ),),
-                              const SizedBox(height:8),
-                              TextFormField(
-                                validator: (value){
-                                  if(value!.isEmpty){
-                                    return "Please enter your product description";
-                                  }
-                                  return null;
-                                },
-                                controller: _productDescriptionController,
-                                decoration: const InputDecoration(
-                                  labelText: "Give your Order a Description",
-                                  border: OutlineInputBorder(),
-                                ),),
-                              const SizedBox(height:8),
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.purple,
-                                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                                ),
-                                onPressed: () {
-                                  try {
-                                    if (formKey.currentState!.validate()) {
-                                      Navigator.push(context,
-                                          MaterialPageRoute(builder: (context) =>
-                                              PesapalPage(
-                                                  phoneNumber: _phoneController
-                                                      .text,
-                                                  email: _emailController.text,
-                                                  firstName: _firstNameController
-                                                      .text,
-                                                  lastName: _lastNameController
-                                                      .text,
-                                                  productDescription: _productDescriptionController
-                                                      .text,
-                                                  totalAmount: totalPrice
-                                              )
-                                          )
-                                      );
-                                    } else {
-                    
+                                const SizedBox(height:8),
+                                TextFormField(
+                                  validator: (value){
+                                    if(value!.isEmpty){
+                                      return "Please enter your email";
+                                    }
+                                    return null;
+                                  },
+                                  controller: _emailController,
+                                  keyboardType: TextInputType.emailAddress,
+                                  decoration: const InputDecoration(
+                                    labelText: "Email",
+                                    border: OutlineInputBorder(),
+                                  ),),
+                                const SizedBox(height:8),
+                                TextFormField(
+                                  validator: (value){
+                                    if(value!.isEmpty){
+                                      return "Please enter your first name";
+                                    }
+                                    return null;
+                                  },
+                                  controller: _firstNameController,
+                                  decoration: const InputDecoration(
+                                    labelText: "First Name",
+                                    border: OutlineInputBorder(),
+                                  ),),
+                                const SizedBox(height:8),
+                                TextFormField(
+                                  validator: (value){
+                                    if(value!.isEmpty){
+                                      return "Please enter your last name";
+                                    }
+                                    return null;
+                                  },
+                                  controller: _lastNameController,
+                                  decoration: const InputDecoration(
+                                    labelText: "Last Name",
+                                    border: OutlineInputBorder(),
+                                  ),),
+                                const SizedBox(height:8),
+                                TextFormField(
+                                  validator: (value){
+                                    if(value!.isEmpty){
+                                      return "Please enter your product description";
+                                    }
+                                    return null;
+                                  },
+                                  controller: _productDescriptionController,
+                                  decoration: const InputDecoration(
+                                    labelText: "Give your Order a Description",
+                                    border: OutlineInputBorder(),
+                                  ),),
+                                const SizedBox(height:8),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.purple,
+                                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                  ),
+                                  onPressed: () {
+                                    try {
+                                      if (formKey.currentState!.validate()) {
+                                        Navigator.push(context,
+                                            MaterialPageRoute(builder: (context) =>
+                                                PesapalPage(
+                                                    phoneNumber: _phoneController
+                                                        .text,
+                                                    email: _emailController.text,
+                                                    firstName: _firstNameController
+                                                        .text,
+                                                    lastName: _lastNameController
+                                                        .text,
+                                                    productDescription: _productDescriptionController
+                                                        .text,
+                                                    totalAmount: totalPrice
+                                                )
+                                            )
+                                        );
+                                      } else {
+
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(
+                                            content: Text("Form is not valid"),
+                                          ),
+                                        );
+                                      }
+                                    }catch(e){
                                       ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(
-                                          content: Text("Form is not valid"),
+                                        SnackBar(
+                                          content: Text("Error Occurred :${e.toString()}"),
                                         ),
                                       );
                                     }
-                                  }catch(e){
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text("Error Occurred :${e.toString()}"),
-                                      ),
-                                    );
-                                  }
-                                },
-                                child: const Text("Checkout",style: TextStyle(color: Colors.white,fontSize: 16),),
-                              ),
-                            ]
-                        )
-                      ),
+                                  },
+                                  child: const Text("Checkout",style: TextStyle(color: Colors.white,fontSize: 16),),
+                                ),
+                              ]
+                          )
+
+                        ),
+                        ]
+                    ),
                   );
                 }
                   );
