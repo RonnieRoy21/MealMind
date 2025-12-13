@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter1/Admin/AdminDashboard/admin_dashboard.dart';
 import 'package:flutter1/Client/Home/home_page.dart';
 import 'package:flutter1/Client/Login/login_page.dart';
 import 'package:flutter1/Client/Login/new_account.dart';
@@ -56,16 +57,39 @@ class _NavigatorState extends State<Navigator> {
 
   int _currentIndex = 0;
 
-   final List <Widget>  _pages =[
+   final List <Widget>  _pagesClient =[
     HomePage(),
     Basket(),
     OrdersPage(),
     ProfilePage(),
   ];
+   final List<Widget> _pagesAdmin=[
+     AdminDashboard(),
+     HomePage(),
+     Basket(),
+     OrdersPage(),
+     ProfilePage(),
+   ];
+
+   final List<BottomNavigationBarItem> _itemsAdmin=[
+     BottomNavigationBarItem(icon: Icon(Icons.admin_panel_settings), label: 'Admin'),
+     BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+     BottomNavigationBarItem(icon: Icon(Icons.shopping_basket), label: 'Basket'),
+     BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Orders'),
+     BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+
+   ];
+   final List<BottomNavigationBarItem> _itemsClient=[
+     BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+     BottomNavigationBarItem(icon: Icon(Icons.shopping_basket), label: 'Basket'),
+     BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Orders'),
+     BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+
+   ];
 
   @override
   Widget build(BuildContext context) {
-
+    final userRole=Provider.of<Logins>(context,listen:true).role!;
     return Scaffold(
 
       bottomNavigationBar: BottomNavigationBar(
@@ -78,14 +102,9 @@ class _NavigatorState extends State<Navigator> {
             _currentIndex = index;
           });
         },
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.shopping_basket), label: 'Basket'),
-          BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Orders'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-        ]
+        items:(userRole.toString()=='admin') ? _itemsAdmin : _itemsClient,
       ),
-      body: _pages[_currentIndex],
+      body: (userRole.toString()=='admin') ?_pagesAdmin[_currentIndex] : _pagesClient[_currentIndex],
     );
   }
 }

@@ -146,7 +146,7 @@ class _PesapalPageState extends State<PesapalPage> {
         Fluttertoast.showToast(msg: "User Id is empty",toastLength: Toast.LENGTH_SHORT);
         return;
       }
-     final response= await _order.addOrder(OrderModel(
+     await _order.addOrder(OrderModel(
         orderDescription: widget.productDescription,
         totalAmount: widget.totalAmount,
         phoneNumber: payingNumber!,
@@ -155,9 +155,9 @@ class _PesapalPageState extends State<PesapalPage> {
         paymentStatus: paymentStatus!,
         dateCreated: dateCreated!,
       ));
-     Fluttertoast.showToast(msg: "Response : ${response.toString()}");
+      (paymentStatus == 'Success' )? Fluttertoast.showToast(msg: "Order added successfully",toastLength: Toast.LENGTH_SHORT) : Fluttertoast.showToast(msg: "Order not paid",toastLength: Toast.LENGTH_SHORT);
     }catch(error){
-      Fluttertoast.showToast(msg: "Error adding order: $error",toastLength: Toast.LENGTH_SHORT);
+      Fluttertoast.showToast(msg: "Error adding order: $error",toastLength: Toast.LENGTH_LONG);
     }
   }
   @override

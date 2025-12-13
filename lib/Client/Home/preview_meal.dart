@@ -29,19 +29,22 @@ class _PreviewMealState extends State<PreviewMeal> {
       ),
       body: imageUrl.isNotEmpty && name.isNotEmpty ?Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CachedNetworkImage(
-                imageUrl:imageUrl
-            ),
-            Text("Name :\n $name"),
-            const SizedBox(height: 10.0,),
-            Text("Price :\n Ksh $price"),
-            const SizedBox(height: 10.0,),
-            Text("Description :\n $description"),
-          ],
+        child: SingleChildScrollView(
+          padding: EdgeInsets.all(10),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CachedNetworkImage(
+                  imageUrl:imageUrl
+              ),
+              Text("Name :\n $name"),
+              const SizedBox(height: 10.0,),
+              Text("Price :\n Ksh $price"),
+              const SizedBox(height: 10.0,),
+              Text("Description :\n $description"),
+            ],
+          ),
         ),
       ) :
         Center(child: Text("No Data"))

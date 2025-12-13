@@ -27,7 +27,6 @@ class Orders{
         'payment_status': order.paymentStatus,
         'date_of_pay': order.dateCreated,
      });
-     Fluttertoast.showToast(msg: "Order Placed Successfully");
     }catch(err){
       return err.toString();
     }

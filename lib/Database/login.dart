@@ -5,7 +5,9 @@ class Logins extends ChangeNotifier {
   final SupabaseClient supabase = Supabase.instance.client;
 
   String? _userId;
+  String? _role;
   String? get userId => _userId;
+  String? get role => _role;
 
   Logins() {
     // restore session automatically on provider creation
@@ -16,6 +18,8 @@ class Logins extends ChangeNotifier {
     final session = supabase.auth.currentSession;
     if (session?.user != null) {
       _userId = session!.user.id;
+      final roleResponse=await supabase.from('USERS').select('role').eq('userId',_userId!).maybeSingle();
+      _role=roleResponse?['role'] as String;
       notifyListeners();
     }
   }
@@ -30,6 +34,8 @@ class Logins extends ChangeNotifier {
       final user = response.user;
       if (user != null) {
         _userId = user.id;
+        final roleResponse=await supabase.from('USERS').select('role').eq('userId',_userId!).maybeSingle();
+        _role=roleResponse!['role'] as String;
         notifyListeners();
         return "Success";
       } else {
