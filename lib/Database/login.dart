@@ -37,6 +37,7 @@ class Logins extends ChangeNotifier {
         final roleResponse=await supabase.from('USERS').select('role').eq('userId',_userId!).maybeSingle();
         _role=roleResponse!['role'] as String;
         notifyListeners();
+        Future.delayed(Duration(seconds: 2));
         return "Success";
       } else {
         return "Login failed: no user returned";

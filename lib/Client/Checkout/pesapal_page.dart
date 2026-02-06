@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -37,27 +39,35 @@ class _PesapalPageState extends State<PesapalPage> {
   final Orders _order = Orders();
   late final WebViewController _webViewController;
 
-  String? confirmationCode, payingNumber, methodOfPayment,dateCreated,paymentStatus;
+  String? confirmationCode,
+      payingNumber,
+      methodOfPayment,
+      dateCreated,
+      paymentStatus;
   String? checkoutUrl;
   String? trackingId;
   String? userId;
   final String callbackUrl = "https://www.google.com";
-  final String paymentEndpoint = "https://fastapi-pesapal.onrender.com/payments/initiate";
-  final String statusEndpoint ="https://fastapi-pesapal.onrender.com/payments/status";
+  final String paymentEndpoint =
+      "https://fastapi-pesapal.onrender.com/payments/initiate";
+  final String statusEndpoint =
+      "https://fastapi-pesapal.onrender.com/payments/status";
 
   @override
   void initState() {
-
     super.initState();
-     initiatePayment();
+    initiatePayment();
+    if (kIsWeb) {
+      return;
+    }
     _webViewController = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(NavigationDelegate(
-        onNavigationRequest: (request) async{
-          if (request.url.contains(callbackUrl)){
+        onNavigationRequest: (request) async {
+          if (request.url.contains(callbackUrl)) {
             Navigator.pop(context);
             Navigator.pushReplacementNamed(context, '/tabs');
-             await addOrder();
+            await addOrder();
             return NavigationDecision.prevent;
           }
           return NavigationDecision.navigate;
@@ -95,58 +105,63 @@ class _PesapalPageState extends State<PesapalPage> {
         if (checkoutUrl != null) {
           _webViewController.loadRequest(Uri.parse(checkoutUrl!));
         } else {
-          Fluttertoast.showToast(msg: "Invalid Check-Out Url",toastLength: Toast.LENGTH_SHORT);
+          Fluttertoast.showToast(
+              msg: "Invalid Check-Out Url", toastLength: Toast.LENGTH_SHORT);
         }
       } else {
-       Fluttertoast.showToast(msg: "Payment initiation failed",toastLength: Toast.LENGTH_SHORT);
+        Fluttertoast.showToast(
+            msg: "Payment initiation failed", toastLength: Toast.LENGTH_SHORT);
       }
     } catch (error) {
-      Fluttertoast.showToast(msg: "Error initiating Payment",toastLength: Toast.LENGTH_SHORT);
+      Fluttertoast.showToast(
+          msg: "Error initiating Payment", toastLength: Toast.LENGTH_SHORT);
     }
   }
 
   Future<void> checkPaymentStatus({required String trackId}) async {
     try {
-      if (userId==null){
-        Fluttertoast.showToast(msg: "User Id is empty",toastLength: Toast.LENGTH_SHORT);
+      if (userId == null) {
+        Fluttertoast.showToast(
+            msg: "User Id is empty", toastLength: Toast.LENGTH_SHORT);
         return;
       }
-      if(trackId.isEmpty){
-        Fluttertoast.showToast(msg: "Invalid Tracking Id",toastLength: Toast.LENGTH_SHORT);
+      if (trackId.isEmpty) {
+        Fluttertoast.showToast(
+            msg: "Invalid Tracking Id", toastLength: Toast.LENGTH_SHORT);
         return;
       }
-       final response= await http.post(
-        Uri.parse(statusEndpoint),
+      final response = await http.post(Uri.parse(statusEndpoint),
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode({
             'order_tracking_id': trackId,
-          })
-      );
-       if(response.statusCode==200){
-         final data=response.body;
-         final responseData=jsonDecode(data);
-         confirmationCode=responseData['confirmation_code'];
-         payingNumber=responseData['payment_account'];
-         methodOfPayment=responseData['payment_method'];
-         dateCreated=responseData['created_date'];
-         paymentStatus=responseData['payment_status_description'];
-       }
-    }catch(error){
-      Fluttertoast.showToast(msg: "Error checking payment status",toastLength: Toast.LENGTH_SHORT);
+          }));
+      if (response.statusCode == 200) {
+        final data = response.body;
+        final responseData = jsonDecode(data);
+        confirmationCode = responseData['confirmation_code'];
+        payingNumber = responseData['payment_account'];
+        methodOfPayment = responseData['payment_method'];
+        dateCreated = responseData['created_date'];
+        paymentStatus = responseData['payment_status_description'];
+      }
+    } catch (error) {
+      Fluttertoast.showToast(
+          msg: "Error checking payment status",
+          toastLength: Toast.LENGTH_SHORT);
     }
   }
 
   //add order to db
   Future<void> addOrder() async {
-
     try {
       await checkPaymentStatus(trackId: trackingId!);
 
-      if (userId==null){
-        Fluttertoast.showToast(msg: "User Id is empty",toastLength: Toast.LENGTH_SHORT);
+      if (userId == null) {
+        Fluttertoast.showToast(
+            msg: "User Id is empty", toastLength: Toast.LENGTH_SHORT);
         return;
       }
-     await _order.addOrder(OrderModel(
+      await _order.addOrder(OrderModel(
         orderDescription: widget.productDescription,
         totalAmount: widget.totalAmount,
         phoneNumber: payingNumber!,
@@ -155,25 +170,47 @@ class _PesapalPageState extends State<PesapalPage> {
         paymentStatus: paymentStatus!,
         dateCreated: dateCreated!,
       ));
-      (paymentStatus == 'Success' )? Fluttertoast.showToast(msg: "Order added successfully",toastLength: Toast.LENGTH_SHORT) : Fluttertoast.showToast(msg: "Order not paid",toastLength: Toast.LENGTH_SHORT);
-    }catch(error){
-      Fluttertoast.showToast(msg: "Error adding order: $error",toastLength: Toast.LENGTH_LONG);
+      (paymentStatus == 'Success')
+          ? Fluttertoast.showToast(
+              msg: "Order added successfully", toastLength: Toast.LENGTH_SHORT)
+          : Fluttertoast.showToast(
+              msg: "Order not paid", toastLength: Toast.LENGTH_SHORT);
+    } catch (error) {
+      Fluttertoast.showToast(
+          msg: "Error adding order: $error", toastLength: Toast.LENGTH_LONG);
     }
   }
+
+  Future<void> loadOnWeb() async {
+    if (checkoutUrl != null) {
+      await UrlLauncher.launchUrl(Uri.parse(checkoutUrl!),
+          webOnlyWindowName: '_self');
+    } else {
+      initiatePayment();
+      await UrlLauncher.launchUrl(
+        Uri.parse(checkoutUrl!),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    userId=Provider.of<Logins>(context).userId;
+    userId = Provider.of<Logins>(context).userId;
+
     return Scaffold(
-      backgroundColor: Colors.grey[600],
-      appBar: AppBar(
-        backgroundColor: Colors.green,
-        title: const Text('Choose your Payment Method'),
-        centerTitle: true,
-      ),
-      body:WebViewWidget(controller: _webViewController)
-    );
+        backgroundColor: Colors.grey[600],
+        appBar: AppBar(
+          backgroundColor: Colors.green,
+          title: const Text('Choose your Payment Method'),
+          centerTitle: true,
+        ),
+        body: kIsWeb
+            ? Center(
+                child: ElevatedButton(
+                  onPressed: loadOnWeb,
+                  child: const Text('Proceed to Payment'),
+                ),
+              )
+            : WebViewWidget(controller: _webViewController));
   }
 }
-
-
-

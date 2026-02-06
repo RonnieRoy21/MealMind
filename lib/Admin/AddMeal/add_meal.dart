@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter1/Database/manage_meals.dart';
 import 'package:image_picker/image_picker.dart';
 
-
 class AddMeal extends StatefulWidget {
   const AddMeal({super.key});
 
@@ -20,20 +19,20 @@ class _AddMealState extends State<AddMeal> {
   final TextEditingController _descriptionController = TextEditingController();
   File? image;
   Uint8List? imageBytes;
-  bool isLoading=false;
+  bool isLoading = false;
 
   @override
-  void dispose(){
+  void dispose() {
     super.dispose();
     _nameController.dispose();
     _priceController.dispose();
     _descriptionController.dispose();
   }
 
-
   Future<void> selectImage() async {
     ImagePicker imagePicker = ImagePicker();
-    final selectedImage = await imagePicker.pickImage(source: ImageSource.gallery);
+    final selectedImage =
+        await imagePicker.pickImage(source: ImageSource.gallery);
     imageBytes = await selectedImage?.readAsBytes();
 
     if (selectedImage != null) {
@@ -41,25 +40,30 @@ class _AddMealState extends State<AddMeal> {
         image = File(selectedImage.path);
       });
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("No image selected")));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("No image selected")));
     }
   }
-  _textFormField({required BuildContext context,required TextEditingController controller,required TextInputType keyboardType, required String labelText,}){
+
+  _textFormField({
+    required BuildContext context,
+    required TextEditingController controller,
+    required TextInputType keyboardType,
+    required String labelText,
+  }) {
     return TextFormField(
-      controller: controller,
-      keyboardType: keyboardType,
-      decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        labelText: labelText.toString()
-      ),
-      validator: (value){
-        if(value == null || value.isEmpty){
-          return 'Please enter $labelText';
-        }
-        return null;
-      }
-    );
+        controller: controller,
+        keyboardType: keyboardType,
+        decoration: InputDecoration(
+            border: OutlineInputBorder(), labelText: labelText.toString()),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Please enter $labelText';
+          }
+          return null;
+        });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,47 +79,83 @@ class _AddMealState extends State<AddMeal> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              _textFormField(context: context,controller: _nameController,labelText: 'Name',keyboardType: TextInputType.text,),
-              const SizedBox(height: 10,),
-              _textFormField(context:context,controller: _priceController,labelText: 'Price',keyboardType: TextInputType.number,),
-              const SizedBox(height: 10,),
-              _textFormField(context:context, controller:_descriptionController,keyboardType: TextInputType.multiline, labelText: 'Description'),
-              const SizedBox(height: 10,),
+              _textFormField(
+                context: context,
+                controller: _nameController,
+                labelText: 'Name',
+                keyboardType: TextInputType.text,
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              _textFormField(
+                context: context,
+                controller: _priceController,
+                labelText: 'Price',
+                keyboardType: TextInputType.number,
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              _textFormField(
+                  context: context,
+                  controller: _descriptionController,
+                  keyboardType: TextInputType.multiline,
+                  labelText: 'Description'),
+              const SizedBox(
+                height: 10,
+              ),
               Row(
                 children: [
-                  image==null ? Text('No image selected') : Image.file(image!,height: 200,width: 200,fit: BoxFit.fitHeight,),
+                  image == null
+                      ? Text('No image selected')
+                      : Image.file(
+                          image!,
+                          height: 200,
+                          width: 200,
+                          fit: BoxFit.fitHeight,
+                        ),
                   TextButton(
-                   style:ButtonStyle(
-                     foregroundColor: WidgetStatePropertyAll(Colors.black,),
-                     backgroundColor: WidgetStateProperty.all(Colors.blue),
-                   ),
-                      onPressed: ()async{
-                      await selectImage();
+                      style: ButtonStyle(
+                        foregroundColor: WidgetStatePropertyAll(
+                          Colors.black,
+                        ),
+                        backgroundColor: WidgetStateProperty.all(Colors.blue),
+                      ),
+                      onPressed: () async {
+                        await selectImage();
                       },
                       child: Text('Upload Image')),
                 ],
               ),
-              const SizedBox(height: 20,),
+              const SizedBox(
+                height: 20,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ElevatedButton(onPressed: ()async{
-                    isLoading=true;
-                    //upload to my database bucket
-                   if(_formKey.currentState!.validate()){
-                     await ManageMeals().uploadMeal(
-                         fileName: _nameController.text,
-                         price: int.tryParse(_priceController.text.toString())!,
-                         description: _descriptionController.text,
-                         image: imageBytes!
-                     );
-                   }
-                   isLoading=false;
-                  }, child: Text('Upload Meal')),
-                  ElevatedButton(onPressed :isLoading ? null : (){
-                    Navigator.pop(context);
-                  }, child: Text('Exit'))
-                
+                  ElevatedButton(
+                      onPressed: () async {
+                        isLoading = true;
+                        //upload to my database bucket
+                        if (_formKey.currentState!.validate()) {
+                          await ManageMeals().addMeal(
+                              fileName: _nameController.text,
+                              price: int.tryParse(
+                                  _priceController.text.toString())!,
+                              description: _descriptionController.text,
+                              image: imageBytes!);
+                        }
+                        isLoading = false;
+                      },
+                      child: Text('Upload Meal')),
+                  ElevatedButton(
+                      onPressed: isLoading
+                          ? null
+                          : () {
+                              Navigator.pop(context);
+                            },
+                      child: Text('Exit'))
                 ],
               )
             ],
