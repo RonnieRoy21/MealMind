@@ -47,6 +47,7 @@ class _PesapalPageState extends State<PesapalPage> {
   String? checkoutUrl;
   String? trackingId;
   String? userId;
+  bool isLoading = false;
   final String callbackUrl = "https://www.google.com";
   final String paymentEndpoint =
       "https://fastapi-pesapal.onrender.com/payments/initiate";
@@ -206,10 +207,17 @@ class _PesapalPageState extends State<PesapalPage> {
         ),
         body: kIsWeb
             ? Center(
-                child: ElevatedButton(
-                  onPressed: loadOnWeb,
-                  child: const Text('Proceed to Payment'),
-                ),
+                child: isLoading
+                    ? CircularProgressIndicator()
+                    : ElevatedButton(
+                        onPressed: () {
+                          loadOnWeb();
+                          setState(() {
+                            isLoading = true;
+                          });
+                        },
+                        child: const Text('Proceed to Payment'),
+                      ),
               )
             : WebViewWidget(controller: _webViewController));
   }
