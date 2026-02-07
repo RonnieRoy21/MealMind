@@ -1,0 +1,4 @@
+{
+  "buildCommand": "git clone https://github.com/flutter/flutter.git --depth 1 -b stable flutter && ./flutter/bin/flutter config --enable-web && ./flutter/bin/flutter build web",
+  "outputDirectory": "build/web"
+}
