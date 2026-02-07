@@ -90,7 +90,7 @@ class _NutritionPageState extends State<NutritionPage> {
         flags = json.decode(response.body);
         return flags;
       } else {
-        Fluttertoast.showToast(msg: "Empty Data from client database");
+        Fluttertoast.showToast(msg: "Empty Data from database");
       }
     } on HttpException catch (e) {
       Fluttertoast.showToast(msg: "Error : ${e.message}");
