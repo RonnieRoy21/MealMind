@@ -18,8 +18,12 @@ class Logins extends ChangeNotifier {
     final session = supabase.auth.currentSession;
     if (session?.user != null) {
       _userId = session!.user.id;
-      final roleResponse=await supabase.from('USERS').select('role').eq('userId',_userId!).maybeSingle();
-      _role=roleResponse?['role'] as String;
+      final roleResponse = await supabase
+          .from('USERS')
+          .select('role')
+          .eq('userId', _userId!)
+          .maybeSingle();
+      _role = roleResponse?['role'] as String;
       notifyListeners();
     }
   }
@@ -34,10 +38,13 @@ class Logins extends ChangeNotifier {
       final user = response.user;
       if (user != null) {
         _userId = user.id;
-        final roleResponse=await supabase.from('USERS').select('role').eq('userId',_userId!).maybeSingle();
-        _role=roleResponse!['role'] as String;
+        final roleResponse = await supabase
+            .from('USERS')
+            .select('role')
+            .eq('userId', _userId!)
+            .maybeSingle();
+        _role = await roleResponse!['role'] as String;
         notifyListeners();
-        Future.delayed(Duration(seconds: 2));
         return "Success";
       } else {
         return "Login failed: no user returned";
@@ -79,16 +86,17 @@ class Logins extends ChangeNotifier {
       return e.toString();
     }
   }
-  Future signUpWithGoogle({ required String tokenId})async{
-    try{
+
+  Future signUpWithGoogle({required String tokenId}) async {
+    try {
       await supabase.auth.signInWithIdToken(
         provider: OAuthProvider.google,
         idToken: tokenId,
       );
       return null;
-    }on AuthApiException catch (error){
+    } on AuthApiException catch (error) {
       return error.message;
-    }catch(error){
+    } catch (error) {
       return error.toString();
     }
   }
@@ -97,6 +105,7 @@ class Logins extends ChangeNotifier {
     try {
       await supabase.auth.signOut();
       _userId = null;
+      _role = null;
       notifyListeners();
       return "Success";
     } catch (e) {

@@ -124,7 +124,7 @@ class _NutritionPageState extends State<NutritionPage> {
                 final list = snapshot.data!;
 
                 return list.isEmpty
-                    ? Text('Empty')
+                    ? Text('Nutrition List Empty')
                     : DataTable(
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.purpleAccent),

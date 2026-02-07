@@ -28,6 +28,7 @@ class _HomePageState extends State<HomePage> {
     BuildContext context,
   ) {
     final basket = Provider.of<BasketModel>(context);
+    final role = Provider.of<Logins>(context, listen: true).role;
     return StreamBuilder(
         stream: getMeals.fetchMeals(),
         builder: (context, snapshot) {
@@ -78,44 +79,54 @@ class _HomePageState extends State<HomePage> {
                             },
                             title: Text('${meal.mealName}'),
                             subtitle: Text('Price: ${meal.mealPrice}'),
-                            trailing: IconButton.outlined(
-                                onPressed: () {
-                                  try {
-                                    if (!basket.containsItem(meal.mealName!)) {
-                                      basket.addToBasket(BasketItem(
-                                          name: meal.mealName!,
-                                          image: meal.mealImage!,
-                                          price: meal.mealPrice!));
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                        content: Text('Added to basket'),
-                                        backgroundColor: Colors.green,
-                                        duration: Duration(seconds: 1),
-                                        behavior: SnackBarBehavior.floating,
-                                        dismissDirection:
-                                            DismissDirection.horizontal,
-                                      ));
-                                    } else {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                        content: Text('Already in basket'),
-                                        backgroundColor: Colors.red,
-                                        duration: Duration(seconds: 1),
-                                        behavior: SnackBarBehavior.floating,
-                                        dismissDirection:
-                                            DismissDirection.horizontal,
-                                      ));
-                                    }
-                                  } catch (e) {
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(SnackBar(
-                                      content: Text(e.toString().toUpperCase()),
-                                      backgroundColor: Colors.red,
-                                      duration: Duration(seconds: 2),
-                                    ));
-                                  }
-                                },
-                                icon: Icon(Icons.add_shopping_cart)),
+                            trailing: (role == "admin")
+                                ? IconButton(
+                                    icon: Icon(Icons.edit),
+                                    onPressed: () {
+                                      Navigator.pushNamed(context, '/edit_meal',
+                                          arguments: meal);
+                                    },
+                                  )
+                                : IconButton.outlined(
+                                    onPressed: () {
+                                      try {
+                                        if (!basket
+                                            .containsItem(meal.mealName!)) {
+                                          basket.addToBasket(BasketItem(
+                                              name: meal.mealName!,
+                                              image: meal.mealImage!,
+                                              price: meal.mealPrice!));
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                            content: Text('Added to basket'),
+                                            backgroundColor: Colors.green,
+                                            duration: Duration(seconds: 1),
+                                            behavior: SnackBarBehavior.floating,
+                                            dismissDirection:
+                                                DismissDirection.horizontal,
+                                          ));
+                                        } else {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                            content: Text('Already in basket'),
+                                            backgroundColor: Colors.red,
+                                            duration: Duration(seconds: 1),
+                                            behavior: SnackBarBehavior.floating,
+                                            dismissDirection:
+                                                DismissDirection.horizontal,
+                                          ));
+                                        }
+                                      } catch (e) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                          content:
+                                              Text(e.toString().toUpperCase()),
+                                          backgroundColor: Colors.red,
+                                          duration: Duration(seconds: 2),
+                                        ));
+                                      }
+                                    },
+                                    icon: Icon(Icons.add_shopping_cart)),
                           ),
                           Divider(),
                           TextButton(
@@ -141,7 +152,7 @@ class _HomePageState extends State<HomePage> {
     BuildContext context,
   ) {
     final basket = Provider.of<BasketModel>(context);
-    final role = logins.role;
+    final role = Provider.of<Logins>(context, listen: true).role;
     return StreamBuilder(
         stream: getMeals.fetchMeals(),
         builder: (context, snapshot) {
@@ -249,6 +260,11 @@ class _HomePageState extends State<HomePage> {
             },
           );
         });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override

@@ -16,104 +16,125 @@ class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  late var _obscureText = true;
+  late bool _obscureText = true;
+
   Widget webLoginPage(BuildContext context) {
-    return Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-      Container(
-        padding: EdgeInsets.all(8),
-        alignment: Alignment.center,
-        child: CachedNetworkImage(
-            imageUrl:
-                'https://funcheaporfree.com/wp-content/uploads/2020/09/Meal-Planning-Apps-Favoreats.jpg'),
-      ),
-      Form(
+    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      CachedNetworkImage(
+          filterQuality: FilterQuality.high,
+          fit: BoxFit.contain,
+          height: 1000,
+          width: 600,
+          imageUrl:
+              'https://funcheaporfree.com/wp-content/uploads/2020/09/Meal-Planning-Apps-Favoreats.jpg'),
+      const SizedBox(width: 15),
+      Flexible(
+          child: Form(
         key: _formKey,
         child: AutofillGroup(
-          child: Column(children: [
-            TextFormField(
-                autofillHints: const [AutofillHints.email],
-                textInputAction: TextInputAction.next,
-                keyboardType: TextInputType.emailAddress,
-                controller: _emailController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: "Email",
-                ),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return "Please enter an email";
-                  }
-                  return null;
-                }),
-            const SizedBox(height: 20),
-            TextFormField(
-                autofillHints: const [
-                  AutofillHints.password,
-                  AutofillHints.newPassword
-                ],
-                textInputAction: TextInputAction.done,
-                obscureText: _obscureText,
-                controller: _passwordController,
-                decoration: InputDecoration(
-                    suffixIcon: IconButton(
-                        icon: Icon(_obscureText
-                            ? Icons.visibility_off
-                            : Icons.visibility),
-                        onPressed: () {
-                          setState(() {
-                            _obscureText = !_obscureText;
-                          });
-                        }),
-                    border: OutlineInputBorder(),
-                    labelText: "Password"),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return "Please enter a password";
-                  }
-                  return null;
-                }),
-            const SizedBox(height: 20),
-            Row(
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Expanded(
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      foregroundColor: WidgetStateProperty.all(Colors.white),
-                      backgroundColor:
-                          WidgetStateProperty.all(Colors.purpleAccent),
+                TextFormField(
+                    autofillHints: const [AutofillHints.email],
+                    textInputAction: TextInputAction.next,
+                    keyboardType: TextInputType.emailAddress,
+                    controller: _emailController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: "Email",
                     ),
-                    onPressed: () async {
-                      if (_formKey.currentState!.validate()) {
-                        String response = await logins.loginWithEmail(
-                            _emailController.text, _passwordController.text);
-                        if (response == "Success") {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text("Login Successful"),
-                              backgroundColor: Colors.green,
-                              duration: Duration(seconds: 1),
-                              behavior: SnackBarBehavior.floating,
-                              dismissDirection: DismissDirection.horizontal,
-                            ),
-                          );
-                          Navigator.pushReplacementNamed(context, '/tabs');
-                        }
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "Please enter an email";
                       }
-                    },
-                    child: Text('Login'),
-                  ),
+                      return null;
+                    }),
+                const SizedBox(height: 20),
+                TextFormField(
+                    autofillHints: const [
+                      AutofillHints.password,
+                      AutofillHints.newPassword
+                    ],
+                    textInputAction: TextInputAction.done,
+                    obscureText: _obscureText,
+                    controller: _passwordController,
+                    decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                            icon: Icon(_obscureText
+                                ? Icons.visibility_off
+                                : Icons.visibility),
+                            onPressed: () {
+                              setState(() {
+                                _obscureText = !_obscureText;
+                              });
+                            }),
+                        border: OutlineInputBorder(),
+                        labelText: "Password"),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "Please enter a password";
+                      }
+                      return null;
+                    }),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          foregroundColor:
+                              WidgetStateProperty.all(Colors.white),
+                          backgroundColor:
+                              WidgetStateProperty.all(Colors.purpleAccent),
+                        ),
+                        onPressed: () async {
+                          if (_formKey.currentState!.validate()) {
+                            String response = await logins.loginWithEmail(
+                                _emailController.text,
+                                _passwordController.text);
+                            if (response == "Success") {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text("Login Successful"),
+                                  backgroundColor: Colors.green,
+                                  duration: Duration(seconds: 1),
+                                  behavior: SnackBarBehavior.floating,
+                                  dismissDirection: DismissDirection.horizontal,
+                                ),
+                              );
+                              Navigator.pushReplacementNamed(context, '/tabs',
+                                  arguments: {
+                                    'role': logins.role,
+                                  }); // Pass the role to});
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Login Failed'),
+                                  backgroundColor: Colors.red,
+                                  duration: Duration(seconds: 2),
+                                  behavior: SnackBarBehavior.floating,
+                                  dismissDirection: DismissDirection.horizontal,
+                                ),
+                              );
+                            }
+                          }
+                        },
+                        child: Text('Login'),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/new_account');
-              },
-              child: Text('New Account'),
-            )
-          ]),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/new_account');
+                  },
+                  child: Text('New Account'),
+                )
+              ]),
         ),
-      ),
+      )),
     ]);
   }
 
@@ -200,6 +221,16 @@ class _LoginState extends State<Login> {
                             ),
                           );
                           Navigator.pushReplacementNamed(context, '/tabs');
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Login Failed'),
+                              backgroundColor: Colors.red,
+                              duration: Duration(seconds: 2),
+                              behavior: SnackBarBehavior.floating,
+                              dismissDirection: DismissDirection.horizontal,
+                            ),
+                          );
                         }
                       }
                     },

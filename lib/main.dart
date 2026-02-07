@@ -92,32 +92,35 @@ class _NavigatorState extends State<Navigator> {
   ];
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final userRole = Provider.of<Logins>(context, listen: true).role;
-    return Scaffold(
-        bottomNavigationBar: BottomNavigationBar(
-          selectedItemColor: Colors.purpleAccent,
-          unselectedItemColor: Colors.lightBlue,
-          showUnselectedLabels: true,
-          currentIndex: _currentIndex,
-          onTap: (index) {
-            setState(() {
-              _currentIndex = index;
-            });
-          },
-          items: (userRole.toString() == 'admin') ? _itemsAdmin : _itemsClient,
-        ),
-        body: (userRole == null || userRole.isEmpty)
-            ? Center(
-                child: Text(
-                "Welcome To MealMind.",
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.purpleAccent,
-                ),
-              ))
-            : ((userRole.toString() == 'admin')
+    final role = ModalRoute.of(context)!.settings.arguments
+        as Map<String, dynamic>?; // Get the arguments passed from login
+    final userRole = role?['role'] as String?; // Extract the role from arguments
+    return (userRole == null || userRole.isEmpty)
+        ? CircularProgressIndicator(
+            backgroundColor: Colors.white,
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.purpleAccent),
+            strokeWidth: 4.0,
+          )
+        : Scaffold(
+            bottomNavigationBar: BottomNavigationBar(
+              selectedItemColor: Colors.purpleAccent,
+              unselectedItemColor: Colors.lightBlue,
+              showUnselectedLabels: true,
+              currentIndex: _currentIndex,
+              onTap: (index) {
+                setState(() {
+                  _currentIndex = index;
+                });
+              },
+              items: (userRole == 'admin') ? _itemsAdmin : _itemsClient,
+            ),
+            body: ((userRole == 'admin')
                 ? _pagesAdmin[_currentIndex]
                 : _pagesClient[_currentIndex]));
   }

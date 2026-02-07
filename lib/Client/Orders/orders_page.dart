@@ -50,26 +50,36 @@ class _OrdersPageState extends State<OrdersPage> {
                 itemCount: _orders.length,
                 itemBuilder: (context, index) {
                   final order = _orders[index];
-                  return ExpansionTile(
-                      backgroundColor: Colors.green[300],
-                      title: Text('Description: ${order.orderDescription}'),
-                      subtitle: Text('Total Paid : Ksh ${order.totalAmount}'),
+                  return Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        ListTile(
-                          title: Text(
-                              'Status: ${order.paymentStatus.toString().toUpperCase()}'),
-                          subtitle:
-                              Text('Payment Method: ${order.methodOfPayment}'),
-                          trailing: Text('Paid By ${order.phoneNumber}'),
-                        ),
-                        ListTile(
-                          title: Text(
-                              'Confirmation Number: ${order.confirmationNumber}'),
-                          trailing: Text('''
+                        ExpansionTile(
+                            backgroundColor: Colors.green[300],
+                            title:
+                                Text('Description: ${order.orderDescription}'),
+                            subtitle:
+                                Text('Total Paid : Ksh ${order.totalAmount}'),
+                            children: [
+                              ListTile(
+                                title: Text(
+                                    'Status: ${order.paymentStatus.toString().toUpperCase()}'),
+                                subtitle: Text(
+                                    'Payment Method: ${order.methodOfPayment}'),
+                                trailing: Text('Paid By ${order.phoneNumber}'),
+                              ),
+                              ListTile(
+                                title: Text(
+                                    'Confirmation Number: ${order.confirmationNumber}'),
+                                trailing: Text('''
                     Date: ${order.dateCreated.toString().split('T')[0]}
                     Time: ${order.dateCreated.toString().split('T')[1].split('.')[0]}
                     '''),
-                        )
+                              )
+                            ]),
+                        Divider(
+                            color: Colors.purpleAccent,
+                            thickness: 1.0,
+                            height: 1.0),
                       ]);
                 });
           }),
