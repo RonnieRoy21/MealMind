@@ -104,12 +104,13 @@ Future getRatings()async{
     }
 }
 
-Future addRating({required double rateValue,required String review})async{
+Future addRating(String username,{required double rateValue,required String review})async{
     try{
       final userId=l.userId as String;
       await supabase.from("RATINGS").update({
         'rating_value':rateValue,
-        'user_comment':review
+        'user_comment':review,
+        'user_name':username
       }).eq('userId', userId);
       Fluttertoast.showToast(msg: "Rating Saved");
     }on PostgrestException catch(dbError){
@@ -117,7 +118,6 @@ Future addRating({required double rateValue,required String review})async{
     }catch(anyOtherError){
       Fluttertoast.showToast(msg: "Error : ${anyOtherError.toString()}");
     }
-
 }
 
 }

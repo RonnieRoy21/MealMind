@@ -48,7 +48,7 @@ class _PesapalPageState extends State<PesapalPage> {
   String? trackingId;
   String? userId;
   bool isLoading = false;
-  final String callbackUrl = "https://www.google.com";
+  final String callbackUrl = "https://mealmind-eight.vercel.app";
   final String paymentEndpoint =
       "https://fastapi-pesapal.onrender.com/payments/initiate";
   final String statusEndpoint =
@@ -103,7 +103,7 @@ class _PesapalPageState extends State<PesapalPage> {
         checkoutUrl = responseData['redirect_url'];
         trackingId = responseData['order_tracking_id'] ??
             responseData['OrderTrackingId'];
-        if (checkoutUrl != null) {
+        if (checkoutUrl != null && !kIsWeb) {
           _webViewController.loadRequest(Uri.parse(checkoutUrl!));
         } else {
           Fluttertoast.showToast(
@@ -176,6 +176,9 @@ class _PesapalPageState extends State<PesapalPage> {
               msg: "Order added successfully", toastLength: Toast.LENGTH_SHORT)
           : Fluttertoast.showToast(
               msg: "Order not paid", toastLength: Toast.LENGTH_SHORT);
+      if (kIsWeb) {
+        Navigator.pop(context);
+      }
     } catch (error) {
       Fluttertoast.showToast(
           msg: "Error adding order: $error", toastLength: Toast.LENGTH_LONG);
@@ -190,6 +193,7 @@ class _PesapalPageState extends State<PesapalPage> {
       initiatePayment();
       await UrlLauncher.launchUrl(
         Uri.parse(checkoutUrl!),
+        webOnlyWindowName: '_self',
       );
     }
   }
@@ -211,9 +215,12 @@ class _PesapalPageState extends State<PesapalPage> {
                     ? CircularProgressIndicator()
                     : ElevatedButton(
                         onPressed: () {
-                          loadOnWeb();
                           setState(() {
                             isLoading = true;
+                          });
+                          loadOnWeb();
+                          setState(() {
+                            isLoading = false;
                           });
                         },
                         child: const Text('Proceed to Payment'),

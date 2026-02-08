@@ -36,7 +36,7 @@ void main() async {
         theme: ThemeData(useMaterial3: true),
         home: Login(),
         routes: {
-          '/tabs': (context) => Navigator(),
+          '/tabs': (context) => Tabs(),
           '/login': (context) => Login(),
           '/home': (context) => HomePage(),
           '/new_account': (context) => NewAccount(),
@@ -51,24 +51,29 @@ void main() async {
   );
 }
 
-class Navigator extends StatefulWidget {
-  const Navigator({super.key});
+class Tabs extends StatefulWidget {
+  final String? userRole;
+  const Tabs({super.key, this.userRole});
 
   @override
-  State<Navigator> createState() => _NavigatorState();
+  State<Tabs> createState() => _TabsState();
 }
 
-class _NavigatorState extends State<Navigator> {
+class _TabsState extends State<Tabs> {
   int _currentIndex = 0;
 
-  final List<Widget> _pagesClient = [
-    HomePage(),
+  late final List<Widget> _pagesClient = [
+    HomePage(
+      role: widget.userRole,
+    ),
     Basket(),
     OrdersPage(),
     ProfilePage(),
   ];
-  final List<Widget> _pagesAdmin = [
-    HomePage(),
+  late final List<Widget> _pagesAdmin = [
+    HomePage(
+      role: widget.userRole,
+    ),
     AddMeal(),
     OrdersPage(),
     DeleteMeal(),
@@ -98,15 +103,12 @@ class _NavigatorState extends State<Navigator> {
 
   @override
   Widget build(BuildContext context) {
-    final role = ModalRoute.of(context)!.settings.arguments
-        as Map<String, dynamic>?; // Get the arguments passed from login
-    final userRole = role?['role'] as String?; // Extract the role from arguments
-    return (userRole == null || userRole.isEmpty)
-        ? CircularProgressIndicator(
-            backgroundColor: Colors.white,
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.purpleAccent),
-            strokeWidth: 4.0,
-          )
+    return (widget.userRole.toString().isEmpty)
+        ? Center(
+            child: CircularProgressIndicator(
+            color: Colors.purpleAccent,
+            semanticsLabel: 'Fetching user role...',
+          ))
         : Scaffold(
             bottomNavigationBar: BottomNavigationBar(
               selectedItemColor: Colors.purpleAccent,
@@ -118,9 +120,9 @@ class _NavigatorState extends State<Navigator> {
                   _currentIndex = index;
                 });
               },
-              items: (userRole == 'admin') ? _itemsAdmin : _itemsClient,
+              items: (widget.userRole == 'admin') ? _itemsAdmin : _itemsClient,
             ),
-            body: ((userRole == 'admin')
+            body: ((widget.userRole == 'admin')
                 ? _pagesAdmin[_currentIndex]
                 : _pagesClient[_currentIndex]));
   }

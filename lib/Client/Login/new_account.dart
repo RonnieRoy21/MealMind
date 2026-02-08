@@ -24,12 +24,10 @@ class _NewAccountState extends State<NewAccount> {
   // Track checked conditions
   final Map<String, bool> _selectedConditions = {};
 
-
   final List<String> _healthConditions = [
     "Diabetes",
     "Hypertension",
     "Heart Disease",
-    "Obesity",
     "None",
   ];
 
@@ -60,20 +58,19 @@ class _NewAccountState extends State<NewAccount> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  autofillHints: [AutofillHints.email],
-                  decoration: InputDecoration(
-                    labelText: "Email",
-                    border: OutlineInputBorder(),
-                  ),
-                  validator:(value){
-                    if(value!.isEmpty){
-                      return "Please enter an email";
-                    }
-                    return null;
-                  }
-                ),
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    autofillHints: [AutofillHints.email],
+                    decoration: InputDecoration(
+                      labelText: "Email",
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "Please enter an email";
+                      }
+                      return null;
+                    }),
               ),
 
               Padding(
@@ -83,20 +80,19 @@ class _NewAccountState extends State<NewAccount> {
                   obscureText: _psswdObscureText,
                   decoration: InputDecoration(
                     suffixIcon: IconButton(
-                      onPressed: (){
-                        setState(() {
-                          _psswdObscureText = !_psswdObscureText;
-                        }
-                          );
-
-                      },
-                      icon: _psswdObscureText? Icon(Icons.visibility_off) : Icon(Icons.visibility)
-                    ),
+                        onPressed: () {
+                          setState(() {
+                            _psswdObscureText = !_psswdObscureText;
+                          });
+                        },
+                        icon: _psswdObscureText
+                            ? Icon(Icons.visibility_off)
+                            : Icon(Icons.visibility)),
                     labelText: "Password",
                     border: OutlineInputBorder(),
                   ),
-                  validator: (value){
-                    if(value!.isEmpty){
+                  validator: (value) {
+                    if (value!.isEmpty) {
                       return "Please enter a password";
                     }
                     return null;
@@ -107,27 +103,28 @@ class _NewAccountState extends State<NewAccount> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
-                  controller: _confirmPasswordController,
-                  obscureText: _confirmPsswdObscureText,
-                  decoration: InputDecoration(
-                    suffixIcon: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          _confirmPsswdObscureText = !_confirmPsswdObscureText;
-                        });
-                      },
-                      icon: _confirmPsswdObscureText? Icon(Icons.visibility_off) : Icon(Icons.visibility)
+                    controller: _confirmPasswordController,
+                    obscureText: _confirmPsswdObscureText,
+                    decoration: InputDecoration(
+                      suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _confirmPsswdObscureText =
+                                  !_confirmPsswdObscureText;
+                            });
+                          },
+                          icon: _confirmPsswdObscureText
+                              ? Icon(Icons.visibility_off)
+                              : Icon(Icons.visibility)),
+                      labelText: "Confirm Password",
+                      border: OutlineInputBorder(),
                     ),
-                    labelText: "Confirm Password",
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return "Please confirm your password";
-                    }
-                    return null;
-                  }
-                ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "Please confirm your password";
+                      }
+                      return null;
+                    }),
               ),
 
               const SizedBox(height: 10),
@@ -155,14 +152,17 @@ class _NewAccountState extends State<NewAccount> {
                           _selectedConditions[condition] = value!;
 
                           if (value == true) {
-                            _selectedConditions["None"] = false; // uncheck None if another is selected
+                            _selectedConditions["None"] =
+                                false; // uncheck None if another is selected
                           } else {
                             // Prevent all from being unchecked
                             if (!_selectedConditions.containsValue(true)) {
-                              _selectedConditions[condition] = true; // re-check it
+                              _selectedConditions[condition] =
+                                  true; // re-check it
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: Text("select at least one condition"),
+                                  content:
+                                      Text("select at least one condition"),
                                   backgroundColor: Colors.red,
                                   duration: Duration(seconds: 2),
                                 ),
@@ -183,18 +183,16 @@ class _NewAccountState extends State<NewAccount> {
                   Expanded(
                     child: ElevatedButton(
                       style: ButtonStyle(
-                        minimumSize:
-                        WidgetStateProperty.all(Size(100, 50)),
-                        foregroundColor:
-                        WidgetStateProperty.all(Colors.white),
-                        backgroundColor:
-                        WidgetStateProperty.all(Colors.blue),
+                        minimumSize: WidgetStateProperty.all(Size(100, 50)),
+                        foregroundColor: WidgetStateProperty.all(Colors.white),
+                        backgroundColor: WidgetStateProperty.all(Colors.blue),
                       ),
                       onPressed: () async {
-                        if(_formKey.currentState!.validate()){
+                        if (_formKey.currentState!.validate()) {
                           final conditions = getSelectedConditions();
 
-                          if (_passwordController.text != _confirmPasswordController.text) {
+                          if (_passwordController.text !=
+                              _confirmPasswordController.text) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text("Passwords don't match"),
@@ -204,24 +202,22 @@ class _NewAccountState extends State<NewAccount> {
                             );
                             return;
                           }
-                          if(conditions.isEmpty){
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                    content: Text("select at least one condition"),
-                                    backgroundColor: Colors.red,
-                                    duration: Duration(seconds: 2)));
+                          if (conditions.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text("select at least one condition"),
+                                backgroundColor: Colors.red,
+                                duration: Duration(seconds: 2)));
                             return;
                           }
 
                           try {
-
                             // Sign up and immediately insert profile
                             final response = await logins.registerWithEmail(
                               email: _emailController.text,
                               password: _passwordController.text,
                               conditions: conditions,
                             );
-                            if (response == "Success" ) {
+                            if (response == "Success") {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text("Account Created"),
@@ -250,7 +246,6 @@ class _NewAccountState extends State<NewAccount> {
                           }
                         }
                       },
-
                       child: Text('Create Account'),
                     ),
                   )

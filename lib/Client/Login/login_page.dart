@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter1/main.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../Database/login.dart';
 
@@ -104,10 +106,11 @@ class _LoginState extends State<Login> {
                                   dismissDirection: DismissDirection.horizontal,
                                 ),
                               );
-                              Navigator.pushReplacementNamed(context, '/tabs',
-                                  arguments: {
-                                    'role': logins.role,
-                                  }); // Pass the role to});
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          Tabs(userRole: logins.role)));
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
@@ -220,7 +223,11 @@ class _LoginState extends State<Login> {
                               dismissDirection: DismissDirection.horizontal,
                             ),
                           );
-                          Navigator.pushReplacementNamed(context, '/tabs');
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      Tabs(userRole: logins.role)));
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(

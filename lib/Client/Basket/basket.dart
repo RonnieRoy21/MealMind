@@ -18,7 +18,7 @@ class _BasketState extends State<Basket> {
   final _lastNameController = TextEditingController();
   final _productDescriptionController = TextEditingController();
 
-  final formKey =GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>();
 
   final Map<int, bool> checkedStates = {};
   final Map<int, TextEditingController> quantityControllers = {};
@@ -40,7 +40,6 @@ class _BasketState extends State<Basket> {
 
   @override
   Widget build(BuildContext context) {
-
     final basket = Provider.of<BasketModel>(context);
     final basketIsEmpty = basket.items.isEmpty;
 
@@ -53,57 +52,57 @@ class _BasketState extends State<Basket> {
       body: basketIsEmpty
           ? const Center(child: Text("Basket is empty"))
           : ListView.builder(
-        itemCount: basket.items.length,
-        itemBuilder: (context, index) {
-          final item = basket.items[index];
-          quantityControllers[index] ??= TextEditingController(text: "1");
-          checkedStates[index] = checkedStates[index] ?? false;
+              itemCount: basket.items.length,
+              itemBuilder: (context, index) {
+                final item = basket.items[index];
+                quantityControllers[index] ??= TextEditingController(text: "1");
+                checkedStates[index] = checkedStates[index] ?? false;
 
-          return Column(
-            children: [
-              Container(
-                color: checkedStates[index] == true
-                    ? Colors.purple.shade50
-                    : Colors.transparent,
-                child: ListTile(
-                  leading: CachedNetworkImage(
-                    imageUrl: item.image,
-                    width: 60,
-                    height: 60,
-                    fit: BoxFit.cover,
-                  ),
-                  title: Text(item.name),
-                  subtitle: Text("${item.price} Ksh each"),
-                  trailing: Checkbox(
-                    activeColor: Colors.purple,
-                    value: checkedStates[index],
-                    onChanged: (value) {
-                      setState(() {
-                        checkedStates[index] = value ?? false;
-                      });
-                      calculateTotals(basket.items);
-                    },
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 20, vertical: 4),
-                child: TextFormField(
-                  controller: quantityControllers[index],
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    labelText: "Quantity",
-                    border: OutlineInputBorder(),
-                  ),
-                  onChanged: (_) => calculateTotals(basket.items),
-                ),
-              ),
-              const Divider(thickness: 1, color: Colors.purple),
-            ],
-          );
-        },
-      ),
+                return Column(
+                  children: [
+                    Container(
+                      color: checkedStates[index] == true
+                          ? Colors.purple.shade50
+                          : Colors.transparent,
+                      child: ListTile(
+                        leading: CachedNetworkImage(
+                          imageUrl: item.image,
+                          width: 60,
+                          height: 60,
+                          fit: BoxFit.cover,
+                        ),
+                        title: Text(item.name),
+                        subtitle: Text("${item.price} Ksh each"),
+                        trailing: Checkbox(
+                          activeColor: Colors.purple,
+                          value: checkedStates[index],
+                          onChanged: (value) {
+                            setState(() {
+                              checkedStates[index] = value ?? false;
+                            });
+                            calculateTotals(basket.items);
+                          },
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 4),
+                      child: TextFormField(
+                        controller: quantityControllers[index],
+                        keyboardType: TextInputType.number,
+                        decoration: const InputDecoration(
+                          labelText: "Quantity",
+                          border: OutlineInputBorder(),
+                        ),
+                        onChanged: (_) => calculateTotals(basket.items),
+                      ),
+                    ),
+                    const Divider(thickness: 1, color: Colors.purple),
+                  ],
+                );
+              },
+            ),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.all(16),
         color: Colors.white,
@@ -122,146 +121,179 @@ class _BasketState extends State<Basket> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.purple,
                 padding:
-                const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               ),
-              onPressed:!(totalPrice > 0) ? null : () {
-                showModalBottomSheet(
-                    isScrollControlled: true,
-                    enableDrag: true,
-                    showDragHandle: true,
-                    context: context,
-                    builder: (context){
-                  return SingleChildScrollView(
-                    child: AlertDialog(
-                      title: Text('Fill all Details to Proceed'),
-                      surfaceTintColor: Colors.greenAccent,
-                      actions:[
-                        Form(
-                          canPop: true,
-                          key: formKey,
-                          child: Column(
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                TextFormField(
-                                  validator: (value){
-                                    if(value!.isEmpty){
-                                      return "Please enter your phone number";
-                                    }
-                                    return null;
-                                  },
-                                  controller: _phoneController ,
-                                  keyboardType: TextInputType.number,
-                                  decoration: const InputDecoration(
-                                    labelText: "Phone Number",
-                                    hintText: "The One To Pay With",
-                                    border: OutlineInputBorder(),
-                                  ),
-                                ),
-                                const SizedBox(height:8),
-                                TextFormField(
-                                  validator: (value){
-                                    if(value!.isEmpty){
-                                      return "Please enter your email";
-                                    }
-                                    return null;
-                                  },
-                                  controller: _emailController,
-                                  keyboardType: TextInputType.emailAddress,
-                                  decoration: const InputDecoration(
-                                    labelText: "Email",
-                                    border: OutlineInputBorder(),
-                                  ),),
-                                const SizedBox(height:8),
-                                TextFormField(
-                                  validator: (value){
-                                    if(value!.isEmpty){
-                                      return "Please enter your first name";
-                                    }
-                                    return null;
-                                  },
-                                  controller: _firstNameController,
-                                  decoration: const InputDecoration(
-                                    labelText: "First Name",
-                                    border: OutlineInputBorder(),
-                                  ),),
-                                const SizedBox(height:8),
-                                TextFormField(
-                                  validator: (value){
-                                    if(value!.isEmpty){
-                                      return "Please enter your last name";
-                                    }
-                                    return null;
-                                  },
-                                  controller: _lastNameController,
-                                  decoration: const InputDecoration(
-                                    labelText: "Last Name",
-                                    border: OutlineInputBorder(),
-                                  ),),
-                                const SizedBox(height:8),
-                                TextFormField(
-                                  validator: (value){
-                                    if(value!.isEmpty){
-                                      return "Please enter your product description";
-                                    }
-                                    return null;
-                                  },
-                                  controller: _productDescriptionController,
-                                  decoration: const InputDecoration(
-                                    labelText: "Give your Order a Description",
-                                    border: OutlineInputBorder(),
-                                  ),),
-                                const SizedBox(height:8),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.purple,
-                                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                                  ),
-                                  onPressed: () {
-                                    try {
-                                      if (formKey.currentState!.validate()) {
-                                        Navigator.push(context,
-                                            MaterialPageRoute(builder: (context) =>
-                                                PesapalPage(
-                                                    phoneNumber: _phoneController
-                                                        .text,
-                                                    email: _emailController.text,
-                                                    firstName: _firstNameController
-                                                        .text,
-                                                    lastName: _lastNameController
-                                                        .text,
-                                                    productDescription: _productDescriptionController
-                                                        .text,
-                                                    totalAmount: totalPrice
-                                                )
-                                            )
-                                        );
-                                      } else {
-
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          const SnackBar(
-                                            content: Text("Form is not valid"),
-                                          ),
-                                        );
-                                      }
-                                    }catch(e){
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          content: Text("Error Occurred :${e.toString()}"),
-                                        ),
-                                      );
-                                    }
-                                  },
-                                  child: const Text("Checkout",style: TextStyle(color: Colors.white,fontSize: 16),),
-                                ),
-                              ]
-                          )
-
-                        ),
-                        ]
-                    ),
-                  );
-                }
-                  );
+              onPressed: !(totalPrice > 0)
+                  ? null
+                  : () {
+                      showModalBottomSheet(
+                          isScrollControlled: true,
+                          enableDrag: true,
+                          showDragHandle: true,
+                          context: context,
+                          builder: (context) {
+                            return SingleChildScrollView(
+                              child: AlertDialog(
+                                  title: Text('Fill all Details to Proceed'),
+                                  surfaceTintColor: Colors.greenAccent,
+                                  actions: [
+                                    Form(
+                                        canPop: true,
+                                        key: formKey,
+                                        child: Column(
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: [
+                                              TextFormField(
+                                                validator: (value) {
+                                                  if (value!.isEmpty) {
+                                                    return "Please enter your phone number";
+                                                  }
+                                                  return null;
+                                                },
+                                                controller: _phoneController,
+                                                keyboardType:
+                                                    TextInputType.number,
+                                                decoration:
+                                                    const InputDecoration(
+                                                  labelText: "Phone Number",
+                                                  hintText:
+                                                      "The One To Pay With",
+                                                  border: OutlineInputBorder(),
+                                                ),
+                                              ),
+                                              const SizedBox(height: 8),
+                                              TextFormField(
+                                                validator: (value) {
+                                                  if (value!.isEmpty) {
+                                                    return "Please enter your email";
+                                                  }
+                                                  return null;
+                                                },
+                                                controller: _emailController,
+                                                keyboardType:
+                                                    TextInputType.emailAddress,
+                                                decoration:
+                                                    const InputDecoration(
+                                                  labelText: "Email",
+                                                  border: OutlineInputBorder(),
+                                                ),
+                                              ),
+                                              const SizedBox(height: 8),
+                                              TextFormField(
+                                                validator: (value) {
+                                                  if (value!.isEmpty) {
+                                                    return "Please enter your first name";
+                                                  }
+                                                  return null;
+                                                },
+                                                controller:
+                                                    _firstNameController,
+                                                decoration:
+                                                    const InputDecoration(
+                                                  labelText: "First Name",
+                                                  border: OutlineInputBorder(),
+                                                ),
+                                              ),
+                                              const SizedBox(height: 8),
+                                              TextFormField(
+                                                validator: (value) {
+                                                  if (value!.isEmpty) {
+                                                    return "Please enter your last name";
+                                                  }
+                                                  return null;
+                                                },
+                                                controller: _lastNameController,
+                                                decoration:
+                                                    const InputDecoration(
+                                                  labelText: "Last Name",
+                                                  border: OutlineInputBorder(),
+                                                ),
+                                              ),
+                                              const SizedBox(height: 8),
+                                              TextFormField(
+                                                //fill with the names of the meals in the basket with the names as keys and the quantities as values
+                                                controller:
+                                                    _productDescriptionController
+                                                      ..text = basket.items
+                                                          .map((e) =>
+                                                              "${e.name} (${e.quantity})")
+                                                          .join(", "),
+                                                readOnly: true,
+                                                maxLines: 6,
+                                                decoration: InputDecoration(
+                                                  labelText:
+                                                      "Product Description",
+                                                  border:
+                                                      const OutlineInputBorder(),
+                                                ),
+                                              ),
+                                              const SizedBox(height: 8),
+                                              ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                      Colors.purple,
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 24,
+                                                      vertical: 12),
+                                                ),
+                                                onPressed: () {
+                                                  try {
+                                                    if (formKey.currentState!
+                                                        .validate()) {
+                                                      Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) => PesapalPage(
+                                                                  phoneNumber:
+                                                                      _phoneController
+                                                                          .text,
+                                                                  email:
+                                                                      _emailController
+                                                                          .text,
+                                                                  firstName:
+                                                                      _firstNameController
+                                                                          .text,
+                                                                  lastName:
+                                                                      _lastNameController
+                                                                          .text,
+                                                                  productDescription:
+                                                                      _productDescriptionController
+                                                                          .text,
+                                                                  totalAmount:
+                                                                      totalPrice)));
+                                                    } else {
+                                                      ScaffoldMessenger.of(
+                                                              context)
+                                                          .showSnackBar(
+                                                        const SnackBar(
+                                                          content: Text(
+                                                              "Form is not valid"),
+                                                        ),
+                                                      );
+                                                    }
+                                                  } catch (e) {
+                                                    ScaffoldMessenger.of(
+                                                            context)
+                                                        .showSnackBar(
+                                                      SnackBar(
+                                                        content: Text(
+                                                            "Error Occurred :${e.toString()}"),
+                                                      ),
+                                                    );
+                                                  }
+                                                },
+                                                child: const Text(
+                                                  "Checkout",
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 16),
+                                                ),
+                                              ),
+                                            ])),
+                                  ]),
+                            );
+                          });
                     },
               child: const Text(
                 "Proceed",

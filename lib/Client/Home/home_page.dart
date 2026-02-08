@@ -11,7 +11,9 @@ import '../../Database/login.dart';
 import '../FoodAnalysis/nutrition_page.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({super.key, this.role});
+
+  final String? role;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -28,7 +30,6 @@ class _HomePageState extends State<HomePage> {
     BuildContext context,
   ) {
     final basket = Provider.of<BasketModel>(context);
-    final role = Provider.of<Logins>(context, listen: true).role;
     return StreamBuilder(
         stream: getMeals.fetchMeals(),
         builder: (context, snapshot) {
@@ -79,7 +80,7 @@ class _HomePageState extends State<HomePage> {
                             },
                             title: Text('${meal.mealName}'),
                             subtitle: Text('Price: ${meal.mealPrice}'),
-                            trailing: (role == "admin")
+                            trailing: (widget.role == "admin")
                                 ? IconButton(
                                     icon: Icon(Icons.edit),
                                     onPressed: () {
@@ -152,7 +153,6 @@ class _HomePageState extends State<HomePage> {
     BuildContext context,
   ) {
     final basket = Provider.of<BasketModel>(context);
-    final role = Provider.of<Logins>(context, listen: true).role;
     return StreamBuilder(
         stream: getMeals.fetchMeals(),
         builder: (context, snapshot) {
@@ -197,7 +197,7 @@ class _HomePageState extends State<HomePage> {
                       },
                       title: Text('${meal.mealName}'),
                       subtitle: Text('Price: Ksh ${meal.mealPrice}'),
-                      trailing: (role == "admin")
+                      trailing: (widget.role == "admin")
                           ? IconButton(
                               icon: Icon(Icons.edit),
                               onPressed: () {
