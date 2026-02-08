@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter1/main.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../Database/login.dart';
 
