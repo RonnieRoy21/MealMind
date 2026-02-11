@@ -52,6 +52,7 @@ class _HomePageState extends State<HomePage> {
             itemCount: meals.length,
             itemBuilder: (context, index) {
               final meal = meals[index];
+
               return Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,

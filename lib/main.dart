@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter1/Admin/AddMeal/add_meal.dart';
 import 'package:flutter1/Admin/DeleteMeal/delete_meal.dart';
 import 'package:flutter1/Admin/EditMeal/edit_meal.dart';
+import 'package:flutter1/Admin/ViewOrders/admin_view_orders.dart';
 import 'package:flutter1/Admin/customer_ratings/customer_ratings.dart';
 import 'package:flutter1/Client/Home/home_page.dart';
 import 'package:flutter1/Client/Login/login_page.dart';
@@ -45,6 +46,10 @@ void main() async {
           '/basket': (context) => Basket(),
           '/orders': (context) => OrdersPage(),
           '/profile': (context) => ProfilePage(),
+          '/add_meal': (context) => AddMeal(),
+          '/delete_meal': (context) => DeleteMeal(),
+          '/admin_view_orders': (context) => AdminViewOrders(),
+
         },
       ),
     ),
@@ -75,7 +80,7 @@ class _TabsState extends State<Tabs> {
       role: widget.userRole,
     ),
     AddMeal(),
-    OrdersPage(),
+    AdminViewOrders(),
     DeleteMeal(),
     CustomerRatings(),
     ProfilePage(),

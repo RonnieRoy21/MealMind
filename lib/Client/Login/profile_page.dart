@@ -17,7 +17,7 @@ class _ProfilePageState extends State<ProfilePage> {
   final TextEditingController _commentController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _commenterController = TextEditingController();
-  late final userProfiles;
+  late final  userProfiles;
   bool isEdited = false;
   double newRating = double.nan;
   double appRating = 0;

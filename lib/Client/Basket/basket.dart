@@ -15,7 +15,7 @@ class _BasketState extends State<Basket> {
   final _phoneController = TextEditingController();
   final _emailController = TextEditingController();
   final _firstNameController = TextEditingController();
-  final _lastNameController = TextEditingController();
+  final _destinationController = TextEditingController();
   final _productDescriptionController = TextEditingController();
 
   final formKey = GlobalKey<FormState>();
@@ -182,7 +182,7 @@ class _BasketState extends State<Basket> {
                                               TextFormField(
                                                 validator: (value) {
                                                   if (value!.isEmpty) {
-                                                    return "Please enter your first name";
+                                                    return "Please enter your name";
                                                   }
                                                   return null;
                                                 },
@@ -190,7 +190,7 @@ class _BasketState extends State<Basket> {
                                                     _firstNameController,
                                                 decoration:
                                                     const InputDecoration(
-                                                  labelText: "First Name",
+                                                  labelText: "Your Name",
                                                   border: OutlineInputBorder(),
                                                 ),
                                               ),
@@ -198,14 +198,14 @@ class _BasketState extends State<Basket> {
                                               TextFormField(
                                                 validator: (value) {
                                                   if (value!.isEmpty) {
-                                                    return "Please enter your last name";
+                                                    return "Please enter desired destination name";
                                                   }
                                                   return null;
                                                 },
-                                                controller: _lastNameController,
+                                                controller: _destinationController,
                                                 decoration:
                                                     const InputDecoration(
-                                                  labelText: "Last Name",
+                                                  labelText: "Where To Deliver",
                                                   border: OutlineInputBorder(),
                                                 ),
                                               ),
@@ -254,12 +254,10 @@ class _BasketState extends State<Basket> {
                                                                   firstName:
                                                                       _firstNameController
                                                                           .text,
-                                                                  lastName:
-                                                                      _lastNameController
-                                                                          .text,
                                                                   productDescription:
                                                                       _productDescriptionController
                                                                           .text,
+                                                                          orderDestination: _destinationController.text,
                                                                   totalAmount:
                                                                       totalPrice)));
                                                     } else {

@@ -18,17 +18,17 @@ class PesapalPage extends StatefulWidget {
     required this.phoneNumber,
     required this.email,
     required this.firstName,
-    required this.lastName,
     required this.productDescription,
     required this.totalAmount,
+    required this.orderDestination,
   });
 
   final int totalAmount;
   final String phoneNumber;
   final String email;
   final String firstName;
-  final String lastName;
   final String productDescription;
+  final String orderDestination;
 
   @override
   State<PesapalPage> createState() => _PesapalPageState();
@@ -88,7 +88,7 @@ class _PesapalPageState extends State<PesapalPage> {
         "customer_email": widget.email,
         "customer_phone": widget.phoneNumber,
         "customer_first_name": widget.firstName,
-        "customer_last_name": widget.lastName,
+        "customer_last_name": "",
         "callback_url": callbackUrl,
       };
 
@@ -105,17 +105,11 @@ class _PesapalPageState extends State<PesapalPage> {
             responseData['OrderTrackingId'];
         if (checkoutUrl != null && !kIsWeb) {
           _webViewController.loadRequest(Uri.parse(checkoutUrl!));
-        } else {
-          Fluttertoast.showToast(
-              msg: "Invalid Check-Out Url", toastLength: Toast.LENGTH_SHORT);
         }
-      } else {
-        Fluttertoast.showToast(
-            msg: "Payment initiation failed", toastLength: Toast.LENGTH_SHORT);
       }
     } catch (error) {
       Fluttertoast.showToast(
-          msg: "Error initiating Payment", toastLength: Toast.LENGTH_SHORT);
+          msg: "Error : $error", toastLength: Toast.LENGTH_LONG);
     }
   }
 
@@ -163,6 +157,7 @@ class _PesapalPageState extends State<PesapalPage> {
         return;
       }
       await _order.addOrder(OrderModel(
+        orderDestination: widget.orderDestination,
         orderDescription: widget.productDescription,
         totalAmount: widget.totalAmount,
         phoneNumber: payingNumber!,
@@ -171,13 +166,15 @@ class _PesapalPageState extends State<PesapalPage> {
         paymentStatus: paymentStatus!,
         dateCreated: dateCreated!,
       ));
-      (paymentStatus == 'Success')
-          ? Fluttertoast.showToast(
-              msg: "Order added successfully", toastLength: Toast.LENGTH_SHORT)
-          : Fluttertoast.showToast(
-              msg: "Order not paid", toastLength: Toast.LENGTH_SHORT);
+      if (paymentStatus!.toLowerCase() == "Success") {
+        Fluttertoast.showToast(
+            msg: "Payment Successful", toastLength: Toast.LENGTH_SHORT);
+      } else {
+        Fluttertoast.showToast(
+            msg: "Payment Failed", toastLength: Toast.LENGTH_SHORT);
+      }
       if (kIsWeb) {
-        Navigator.pop(context);
+        Navigator.popUntil(context, ModalRoute.withName('/tabs'));
       }
     } catch (error) {
       Fluttertoast.showToast(

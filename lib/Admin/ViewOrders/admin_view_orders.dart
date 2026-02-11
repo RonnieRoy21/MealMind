@@ -1,31 +1,30 @@
 import 'package:flutter/material.dart';
-import '../../Database/orders.dart';
+import 'package:flutter1/Database/orders.dart';
 
-class OrdersPage extends StatefulWidget {
-  const OrdersPage({super.key});
+class AdminViewOrders extends StatefulWidget {
+  const AdminViewOrders({super.key});
 
   @override
-  State<OrdersPage> createState() => _OrdersPageState();
+  State<AdminViewOrders> createState() => _AdminViewOrdersState();
 }
 
-class _OrdersPageState extends State<OrdersPage> {
+class _AdminViewOrdersState extends State<AdminViewOrders> {
   late final Orders _myOrders = Orders();
   List _orders = [];
   bool fetchCompleted = true;
 
   @override
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Orders'),
+        title: Text('View Every Order'),
         centerTitle: true,
         backgroundColor: Colors.purpleAccent,
       ),
       body: FutureBuilder(
           future: (fetchCompleted)
-              ? _myOrders.getMyCompletedOrders()
-              : _myOrders.getAllMyOrders(),
+              ? _myOrders.adminGetCompletedOrders()
+              : _myOrders.adminGetAllOrders(),
           builder: (context, snapshot) {
             try {
               if (!snapshot.hasData) {
@@ -54,14 +53,13 @@ class _OrdersPageState extends State<OrdersPage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         ExpansionTile(
-                            backgroundColor: Colors.blue[400],
+                            backgroundColor: Colors.green[300],
                             title:
                                 Text('Description: ${order.orderDescription}'),
                             subtitle:
                                 Text('Total Paid : Ksh ${order.totalAmount}'),
-                            trailing: Text(order.orderDestination
-                                .toString()
-                                .toUpperCase()),
+                            trailing: Text(
+                                'Deliver To:\n${order.orderDestination.toString().toUpperCase()}'),
                             children: [
                               ListTile(
                                 title: Text(
@@ -100,7 +98,7 @@ class _OrdersPageState extends State<OrdersPage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.done_all),
-            label: 'Completed',
+            label: 'Paid',
           ),
         ],
       ),

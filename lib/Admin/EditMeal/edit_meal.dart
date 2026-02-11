@@ -37,7 +37,8 @@ class _EditMealState extends State<EditMeal> {
                         ? 'Name cannot be empty'
                         : null,
                     decoration: InputDecoration(
-                        labelText: 'Food Name', border: OutlineInputBorder()),
+                        labelText: 'Food Name(e.g. 150ml ice cream)',
+                        border: OutlineInputBorder()),
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
@@ -73,6 +74,7 @@ class _EditMealState extends State<EditMeal> {
                               if (_formKey.currentState!.validate()) {
                                 // Call your edit meal function here
                                 ManageMeals().editMeal(
+                                    id: meal.id!,
                                     foodName: _nameController.text.trim(),
                                     price:
                                         int.parse(_priceController.text.trim()),

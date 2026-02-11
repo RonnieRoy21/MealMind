@@ -12,7 +12,9 @@ class _CustomerRatingsState extends State<CustomerRatings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey,
       appBar: AppBar(
+        backgroundColor: Colors.purpleAccent,
         title: Text('Customer Ratings'),
         centerTitle: true,
       ),
@@ -30,8 +32,12 @@ class _CustomerRatingsState extends State<CustomerRatings> {
                 itemBuilder: (context, index) {
                   final rating = ratingsList[index];
                   return ListTile(
+                    leading: Icon(Icons.person, color: Colors.amber),
                     title: Text(
-                        "Comment : ${rating['user_comment'] ?? 'No comment'}"),
+                      "${rating['user_comment'] ?? 'No comment'}",
+                      style:
+                          TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                    ),
                     trailing: Text("${rating['customer_name'] ?? 'Anonymous'}"),
                     subtitle:
                         Text("Rating : ${rating['rating_value']?.toString()}"),

@@ -16,6 +16,7 @@ class _DeleteMealState extends State<DeleteMeal> {
     final Orders meals = Orders();
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.purple,
           title: Text('Delete a Meal'),
           centerTitle: true,
         ),
@@ -45,11 +46,12 @@ class _DeleteMealState extends State<DeleteMeal> {
                             ? null
                             : () async {
                                 isLoading = true;
-                                print(
-                                    "Attempting to delete meal: ${meal.mealName}");
                                 await ManageMeals().deleteMeal(
-                                    meal.mealName!.toString().trim());
-                                isLoading = false;
+                                  int.parse(meal.id.toString()),
+                                );
+                                setState(() {
+                                  isLoading = false;
+                                });
                               },
                       ),
                     );

@@ -82,7 +82,7 @@ class _AddMealState extends State<AddMeal> {
               _textFormField(
                 context: context,
                 controller: _nameController,
-                labelText: 'Name',
+                labelText: 'Name(e.g. 150ml ice cream)',
                 keyboardType: TextInputType.text,
               ),
               const SizedBox(
@@ -137,8 +137,14 @@ class _AddMealState extends State<AddMeal> {
                   ElevatedButton(
                       onPressed: () async {
                         isLoading = true;
+
                         //upload to my database bucket
                         if (_formKey.currentState!.validate()) {
+                          if (imageBytes == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text("Please select an image")));
+                            return;
+                          }
                           await ManageMeals().addMeal(
                               fileName: _nameController.text,
                               price: int.tryParse(

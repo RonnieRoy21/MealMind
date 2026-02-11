@@ -39,9 +39,9 @@ class ManageMeals {
   }
 
   //admin can delete a meal
-  Future deleteMeal(String foodName) async {
+  Future deleteMeal(int foodId) async {
     try {
-      await supabase.from('MEALS').delete().eq('food_name', foodName);
+      await supabase.from('MEALS').delete().eq('food_id', foodId);
       Fluttertoast.showToast(msg: "Deleted from database");
     } on StorageException catch (dbError) {
       Fluttertoast.showToast(msg: dbError.message.toString());
@@ -52,7 +52,7 @@ class ManageMeals {
 
   //admin can edit a meal
   Future editMeal(
-      {
+      {required int id,
       required String foodName,
       required int price,
       required String description}) async {
@@ -61,7 +61,7 @@ class ManageMeals {
         'food_name': foodName,
         'food_price': price,
         'food_description': description,
-      }).eq('food_name', foodName);
+      }).eq('food_id', id);
     } on StorageException catch (dbError) {
       Fluttertoast.showToast(msg: dbError.message.toString());
     } catch (err) {

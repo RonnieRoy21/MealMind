@@ -125,10 +125,13 @@ class _NutritionPageState extends State<NutritionPage> {
 
                 return list.isEmpty
                     ? Text('Nutrition List Empty')
-                    : DataTable(
+                    : Center(
+                        child: DataTable(
+                        dividerThickness: 3,
+                        showBottomBorder: true,
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.purpleAccent),
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(8),
                         ),
                         columns: [
                           DataColumn(label: Text('NUTRIENT')),
@@ -175,7 +178,7 @@ class _NutritionPageState extends State<NutritionPage> {
                             DataCell(Text("${list['Potassium'].toString()} mg"))
                           ]),
                         ],
-                      );
+                      ));
               },
             ),
             ElevatedButton(

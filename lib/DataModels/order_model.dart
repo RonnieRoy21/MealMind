@@ -7,9 +7,11 @@ class OrderModel{
     required this.confirmationNumber,
     required this.paymentStatus,
     required this.dateCreated,
+    required this.orderDestination,
 });
 
   final String orderDescription;
+  final String orderDestination;
   final int totalAmount;
   final String phoneNumber;
   final String methodOfPayment;
@@ -26,6 +28,7 @@ factory OrderModel.fromJson(Map<String, dynamic> json){
       confirmationNumber: json['confirmation_code'].toString(),
       paymentStatus: json['payment_status'].toString(),
       dateCreated: json['date_of_pay'].toString(),
+      orderDestination: json['order_destination'].toString(),
     );
 }
 }
