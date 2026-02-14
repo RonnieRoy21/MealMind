@@ -54,9 +54,9 @@ class _OrdersPageState extends State<OrdersPage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         ExpansionTile(
-                            backgroundColor: Colors.blue[400],
-                            title:
-                                Text('Description: ${order.orderDescription}'),
+                            backgroundColor: Colors.grey[300],
+                            title: Text(
+                                'Order_Description: ${order.orderDescription}'),
                             subtitle:
                                 Text('Total Paid : Ksh ${order.totalAmount}'),
                             trailing: Text(order.orderDestination
@@ -96,11 +96,11 @@ class _OrdersPageState extends State<OrdersPage> {
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.all_inclusive),
-            label: 'All',
+            label: 'All Orders',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.done_all),
-            label: 'Completed',
+            label: 'Paid Orders',
           ),
         ],
       ),

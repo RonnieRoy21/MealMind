@@ -27,7 +27,7 @@ class _NutritionPageState extends State<NutritionPage> {
   Future<Map<String, dynamic>> fetchNutrition(String meal) async {
     try {
       List<String> foods = [meal];
-      final separators = ['and', ','];
+      final separators = ['and', ',','with','&'];
       for (final sep in separators) {
         List<String> temp = [];
         for (final p in foods) {

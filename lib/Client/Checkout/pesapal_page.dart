@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter1/DataModels/macro_model.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
@@ -169,6 +170,9 @@ class _PesapalPageState extends State<PesapalPage> {
       if (paymentStatus!.toLowerCase() == "Success") {
         Fluttertoast.showToast(
             msg: "Payment Successful", toastLength: Toast.LENGTH_SHORT);
+        await _order.insertConsumedMacros(
+          foodName: widget.productDescription.toString().split('(')[0].trim(),
+        );
       } else {
         Fluttertoast.showToast(
             msg: "Payment Failed", toastLength: Toast.LENGTH_SHORT);

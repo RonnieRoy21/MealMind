@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter1/DataModels/profile_model.dart';
 import 'package:flutter1/Database/profile_details.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -17,9 +18,9 @@ class _ProfilePageState extends State<ProfilePage> {
   final TextEditingController _commentController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _commenterController = TextEditingController();
-  late final  userProfiles;
+  late final userProfiles;
   bool isEdited = false;
-  double newRating = double.nan;
+  late double newRating;
   double appRating = 0;
 
   List<String> imgPathList = [
@@ -187,11 +188,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           Icons.star,
                           color: Colors.grey,
                         )),
-                    onRatingUpdate: (rating) {
-                      setState(() {
-                        newRating = rating;
-                      });
-                    }),
+                    onRatingUpdate: (rating) => newRating = rating),
                 const SizedBox(
                   height: 20,
                 ),
@@ -240,6 +237,13 @@ class _ProfilePageState extends State<ProfilePage> {
                             EdgeInsets.symmetric(horizontal: 30, vertical: 15)),
                     onPressed: () async {
                       if (_ratingFormKey.currentState!.validate()) {
+                        //check if rating is not null
+                        if (newRating.isNaN) {
+                          Fluttertoast.showToast(
+                              msg: "Please provide a rating before submitting",
+                              toastLength: Toast.LENGTH_SHORT);
+                          return;
+                        }
                         await profile.addRating(_commenterController.text,
                             rateValue: newRating,
                             review: _commentController.text);

@@ -1,7 +1,11 @@
+import 'dart:convert';
+
+import 'package:flutter1/Client/FoodAnalysis/nutrition_page.dart';
 import 'package:flutter1/DataModels/macro_model.dart';
 import 'package:flutter1/DataModels/order_model.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:http/http.dart' as http;
 
 import '../DataModels/meal_model.dart';
 import 'login.dart';
@@ -39,14 +43,76 @@ class Orders {
       return err.toString();
     }
   }
-  Future insertConsumedMacros(MacroModel macros) async {
+
+  Future<Map<String, dynamic>> fetchNutrition(String meal) async {
+    Map<String, dynamic> nutrition = {};
     try {
-      await supabase.from("MACROS").insert({
+      List<String> foods = [meal];
+      final separators = ['and', ',', 'with', '&'];
+      for (final sep in separators) {
+        List<String> temp = [];
+        for (final p in foods) {
+          if (p.contains(sep)) {
+            temp.addAll(p.split(sep));
+          } else {
+            temp.add(p);
+          }
+        }
+        foods = temp;
+      }
+      final uri =
+          "https://ronnieroy-nutritionalanalysis.onrender.com/getNutrients";
+      final myUrl = Uri.parse(uri);
+      final response = await http.post(
+        myUrl,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: json.encode({"food_names": foods}),
+      );
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data != null) {
+          nutrition.addAll(data['totalsList']);
+          return data['totalsList'];
+        } else {
+          Fluttertoast.showToast(msg: "No Data from server");
+          return {};
+        }
+      } else {
+        Fluttertoast.showToast(
+            msg:
+                "Error: ${response.reasonPhrase}\n Status Code: ${response.statusCode}");
+        return {};
+      }
+    } catch (error) {
+      return {};
+    }
+  }
+
+  Future insertConsumedMacros({required String foodName}) async {
+    try {
+      final nutritionData = await fetchNutrition(foodName);
+      print("Nutrition Data to be stored: $nutritionData");
+      final macros = MacroModel(
+        calories: int.tryParse(nutritionData['calories'].toString()) ?? 0,
+        carbohydrates:
+            int.tryParse(nutritionData['carbohydrates'].toString()) ?? 0,
+        protein: int.tryParse(nutritionData['protein'].toString()) ?? 0,
+        fats: int.tryParse(nutritionData['fats'].toString()) ?? 0,
+        sodium: int.tryParse(nutritionData['sodium'].toString()) ?? 0,
+        sugar: int.tryParse(nutritionData['sugar'].toString()) ?? 0,
+        fiber: int.tryParse(nutritionData['fiber'].toString()) ?? 0,
+        cholesterol: int.tryParse(nutritionData['cholesterol'].toString()) ?? 0,
+        potassium: int.tryParse(nutritionData['potassium'].toString()) ?? 0,
+      );
+      await supabase.from("CONSUMED_MACROS").insert({
         'userId': l.userId.toString(),
+        'food_name': foodName,
         'calories': macros.calories,
-        'carbs': macros.carbohydrates,
+        'carbohydrates': macros.carbohydrates,
         'protein': macros.protein,
-        'fat': macros.fats,
+        'fats': macros.fats,
         'sodium': macros.sodium,
         'sugar': macros.sugar,
         'fiber': macros.fiber,
@@ -58,7 +124,6 @@ class Orders {
     } catch (err) {
       return err.toString();
     }
-
   }
 
   Future getAllMyOrders() async {
