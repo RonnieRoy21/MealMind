@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter1/Client/FoodAnalysis/nutrition_page.dart';
 import 'package:flutter1/DataModels/macro_model.dart';
 import 'package:flutter1/DataModels/order_model.dart';
 import 'package:fluttertoast/fluttertoast.dart';
