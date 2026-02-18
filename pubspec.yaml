@@ -45,6 +45,14 @@ dependencies:
   image_picker: ^1.2.1
   url_launcher: ^6.3.2
   flutter_launcher_icons: ^0.14.4
+  flutter_native_splash: ^2.2.11
+
+
+flutter_native_splash:
+  color: "#FFA500" # fallback background color if your image has transparency
+  image: assets/mealmind_splash_screen.png 
+  android: true
+  ios: true
 
 
 flutter_launcher_icons:

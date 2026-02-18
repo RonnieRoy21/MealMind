@@ -54,7 +54,6 @@ class _NewAccountState extends State<NewAccount> {
           child: Column(
             children: [
               const SizedBox(height: 20),
-
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
@@ -175,9 +174,7 @@ class _NewAccountState extends State<NewAccount> {
                   );
                 },
               ),
-
               const SizedBox(height: 20),
-
               Row(
                 children: [
                   Expanded(
